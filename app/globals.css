@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+html {
+  width: 100%;
+  min-height: 100%;
+  background: #FAFAF8;
+  color: #111827;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  color: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img,
+canvas,
+svg {
+  display: block;
+}
+
+/* ============================= */
+/* XORA MARQUEE */
+/* ============================= */
+
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  width: max-content;
+  display: flex;
+  animation: marquee 50s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation-play-state: paused;
+  }
+}
+
+/* ============================= */
+/* XORA TYPOGRAPHY UTILITIES     */
+/* ============================= */
+
+.font-display {
+  font-family: var(--font-display), sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-body), sans-serif;
+}
+/* ========================= */
+/* WHY XORA LOOP */
+/* ========================= */
+
+@keyframes why-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes why-scroll-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.why-scroll-left{
+  animation: why-scroll-left 38s linear infinite;
+}
+
+.why-scroll-right{
+  animation: why-scroll-right 38s linear infinite;
+}
+
+.why-scroll-left:hover,
+.why-scroll-right:hover{
+  animation-play-state: paused;
+}

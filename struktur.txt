@@ -1,0 +1,112 @@
+components
+├── 3d
+│   └── XoraLogo.tsx
+├── animation
+│   ├── FadeIn.tsx
+│   ├── HoverCard.tsx
+│   ├── LoadingScreen.tsx
+│   ├── MotionWrapper.tsx
+│   ├── PageTransition.tsx
+│   ├── SmoothScroll.tsx
+│   └── Stagger.tsx
+├── cards
+├── common
+├── forms
+├── home
+│   ├── LogoScroll.tsx
+│   └── XoraFrame.tsx
+├── icons
+├── layout
+│   ├── Footer.tsx
+│   ├── LayoutContent.tsx
+│   ├── MobileMenu.tsx
+│   ├── Navbar.tsx
+│   ├── Sidebar.tsx
+│   ├── accordion
+│   ├── button
+│   └── input
+├── navigation
+├── seo
+│   └── JsonLd.tsx
+└── ui
+    ├── button.tsx
+    ├── card.tsx
+    ├── portofolio card
+    ├── pricing card
+    └── product card
+app
+├── about
+│   └── page.tsx
+├── contact
+│   └── page.tsx
+├── favicon.ico
+├── globals.css
+├── layout.tsx
+├── manifest.ts
+├── page.tsx
+├── portfolio
+│   └── page.tsx
+├── pricing
+│   └── page.tsx
+├── products
+│   └── page.tsx
+├── robots.ts
+├── sitemap.ts
+└── templates
+    ├── [slug]
+    │   └── page.tsx
+    └── page.tsx
+public
+├── XORA.glb
+├── XR.glb
+├── assets
+│   ├── coffee-shop
+│   │   ├── about
+│   │   │   ├── barista.webp
+│   │   │   └── coffee-beans.webp
+│   │   ├── bestseller
+│   │   ├── customization
+│   │   │   └── laptop-mockup.webp
+│   │   ├── hero
+│   │   │   └── hero-background.webp
+│   │   └── menu
+│   │       ├── cappuccino.webp
+│   │       ├── caramel-latte.webp
+│   │       ├── cheesecake.webp
+│   │       ├── croissant.webp
+│   │       ├── espresso.webp
+│   │       ├── latte.webp
+│   │       └── matcha-latte.webp
+│   ├── contractor
+│   │   ├── hero
+│   │   │   └── hero-background.webp
+│   │   ├── logo
+│   │   │   └── xora-white.png
+│   │   ├── project
+│   │   │   └── project-1.webp
+│   │   └── services
+│   │       ├── architecture.webp
+│   │       ├── commercial.webp
+│   │       ├── industrial.webp
+│   │       ├── renovation.webp
+│   │       └── residential.webp
+│   └── home
+│       └── hero
+│           └── hero-background.webp
+├── favicon.png
+├── file.svg
+├── fullxora.png
+├── globe.svg
+├── images
+│   └── hero
+│       └── hero-preview.png
+├── next.svg
+├── templates
+│   └── brewly
+│       └── hero-coffee.jpg
+├── vercel.svg
+├── window.svg
+├── xora.png
+└── xora.svg
+
+45 directories, 65 files

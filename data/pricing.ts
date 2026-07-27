@@ -1,0 +1,57 @@
+export const pricingPlans = [
+  {
+    name: "Starter",
+    badge: "🔥 Promo Launching",
+    oldPrice: "Rp 2.500.000",
+    price: "Rp 499.000",
+    save: "Hemat Rp 2.001.000",
+    featured: false,
+    button: "Mulai Sekarang",
+    features: [
+      "Company Profile",
+      "Responsive Design",
+      "SEO Basic",
+      "WhatsApp Integration",
+      "5 Halaman",
+      "Gratis Konsultasi",
+    ],
+  },
+
+  {
+    name: "Business",
+    badge: "⭐ Most Popular",
+    oldPrice: "Rp 5.000.000",
+    price: "Rp 999.000",
+    save: "Hemat Rp 4.001.000",
+    featured: true,
+    button: "Pilih Paket",
+    features: [
+      "Semua Starter",
+      "Dashboard Admin",
+      "CMS",
+      "Blog",
+      "SEO Advanced",
+      "Maintenance 1 Bulan",
+      "Prioritas Support",
+    ],
+  },
+
+  {
+    name: "Enterprise",
+    badge: "Custom Solution",
+    oldPrice: "",
+    price: "Custom",
+    save: "Hubungi Kami",
+    featured: false,
+    button: "Konsultasi",
+    features: [
+      "Website Custom",
+      "Dashboard",
+      "API Integration",
+      "Multi User",
+      "Database",
+      "Maintenance",
+      "Priority Support",
+    ],
+  },
+];
