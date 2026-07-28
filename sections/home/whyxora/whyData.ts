@@ -12,30 +12,30 @@ import business from "./assets/business.webp";
 import realestate from "./assets/realestate.webp";
 
 export const whyContent = {
-    number: "03",
+  number: "03",
 
-    label: "WHY XORA",
+  label: "WHY XORA",
 
-    title: "Why\nXORA",
+  title: "Why\nXORA",
 
-    description:
-        "XORA menghadirkan template premium dengan desain modern, performa tinggi, dan pengalaman digital yang dirancang untuk membantu bisnis tampil lebih profesional, dipercaya, dan berkembang lebih cepat.",
+  description:
+    "XORA menghadirkan template premium dengan desain modern, performa tinggi, dan pengalaman digital yang dirancang untuk membantu bisnis tampil lebih profesional, dipercaya, dan berkembang lebih cepat.",
 };
 
 export const topTemplates = [
-    coffeeShop,
-    digitalAgency,
-    architect,
-    dashboard,
-    fashion,
-    travel,
+  coffeeShop,
+  digitalAgency,
+  architect,
+  dashboard,
+  fashion,
+  travel,
 ];
 
 export const bottomTemplates = [
-    hotel,
-    healthcare,
-    lawfirm,
-    furniture,
-    business,
-    realestate,
+  hotel,
+  healthcare,
+  lawfirm,
+  furniture,
+  business,
+  realestate,
 ];

@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger,ScrollToPlugin);
 
 export default function ProductScrollTimeline() {
   useGSAP(() => {
@@ -26,13 +26,31 @@ export default function ProductScrollTimeline() {
       "#product-stack > [data-product-card]"
     );
 
-    if (
-      !products ||
-      !serviceTitle ||
-      !productContent
-    ) {
-      return;
-    }
+    const navs = gsap.utils.toArray<HTMLElement>(
+      "#product-navigation [data-nav]"
+    );
+    // Menyimpan posisi timeline setiap product
+    const productPositions: number[] = [];
+    const updateActiveNav = (activeIndex: number) => {
+      navs.forEach((nav, index) => {
+        const isActive = index === activeIndex;
+        const indicator = nav.querySelector<HTMLElement>("div");
+
+        nav.classList.toggle("is-active", isActive);
+
+        if (indicator) {
+          gsap.set(indicator, { scaleX: isActive ? 1 : 0 });
+        }
+      });
+    };
+
+      if (
+        !products ||
+        !serviceTitle ||
+        !productContent 
+      ) {
+        return;
+      }
 
     // ======================================================
     // INITIAL STATE
@@ -84,7 +102,37 @@ export default function ProductScrollTimeline() {
         invalidateOnRefresh: true,
       },
     });
+    // ======================================================
+    // NAVIGATION CLICK
+    // ======================================================
 
+    const scrollTrigger = story.scrollTrigger;
+
+        const navHandlers = navs.map((nav, index) => {
+      const handler = () => {
+        if (!scrollTrigger) return;
+
+        const progress =
+          cards.length <= 1
+            ? 0
+            : index / (cards.length - 1);
+
+        gsap.to(window, {
+          duration: 1,
+          ease: "power3.inOut",
+          scrollTo:
+            scrollTrigger.start +
+            (scrollTrigger.end - scrollTrigger.start) *
+              progress,
+        });
+      };
+
+      nav.addEventListener("click", handler);
+
+      return { nav, handler };
+    });
+    // ======================================================
+    // SERVICE HOLD
     // ======================================================
 
     story.to({}, { duration: 0.28 });
@@ -120,6 +168,8 @@ export default function ProductScrollTimeline() {
       "-=0.12"
     );
 
+    story.call(() => updateActiveNav(0));
+
     // ======================================================
     // HOLD
     // ======================================================
@@ -140,6 +190,19 @@ export default function ProductScrollTimeline() {
           autoAlpha: 0,
           duration: 0.45,
           ease: "power4.inOut",
+
+          onStart: () => {
+            updateActiveNav(index + 1);
+          },
+
+          onReverseComplete: () => {
+            gsap.set(card, {
+              yPercent: 0,
+              autoAlpha: 1,
+            });
+
+            updateActiveNav(index);
+          },
         }
       );
 
@@ -165,7 +228,11 @@ export default function ProductScrollTimeline() {
     // CLEANUP
     // ======================================================
 
-    return () => {
+   return () => {
+      navHandlers.forEach(({ nav, handler }) => {
+        nav.removeEventListener("click", handler);
+      });
+
       story.scrollTrigger?.kill();
       story.kill();
     };
