@@ -1,4 +1,5 @@
 import { products } from "../productData";
+import Image from "next/image";
 
 const product = products[0];
 
@@ -30,25 +31,22 @@ export default function FeaturedProject() {
           {/* IMAGE */}
 
           <div
-          id="featured-image-wrapper"
-          className="
-            relative
-            overflow-hidden
-            border-b
-            border-white/10
-            lg:border-b-0
-            lg:border-r
-          "
-        >
-            <img
+            id="featured-image-wrapper"
+            className="
+              relative
+              overflow-hidden
+              border-b
+              border-white/10
+              lg:border-b-0
+              lg:border-r
+            "
+          >
+            <Image
               id="featured-image"
               src={product.image}
               alt={product.title}
-              className="
-                h-full
-                w-full
-                object-cover
-              "
+              className="object-cover"
+              fill
             />
           </div>
 
