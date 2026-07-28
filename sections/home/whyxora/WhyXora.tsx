@@ -1,13 +1,15 @@
 "use client";
-import WhyXoraTimeline from "./WhyXoraTimeline";
-import type { StaticImageData } from "next/image";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
+import WhyXoraTimeline from "./WhyXoraTimeline";
 import {
   whyContent,
   topTemplates,
   bottomTemplates,
 } from "./whyData";
+
+const topLoop = [...topTemplates, ...topTemplates];
+const bottomLoop = [...bottomTemplates, ...bottomTemplates];
 
 export default function WhyXora() {
   return (
@@ -17,26 +19,26 @@ export default function WhyXora() {
         relative
         overflow-hidden
         bg-gradient-to-b
-        from-[#ffffff]
-        via-[#f6fbff]
+        from-white
+        via-[#f7fbff]
         to-[#eef7ff]
         py-32
       "
     >
-      {/* Crystal Glow */}
+      {/* ================= Background Glow ================= */}
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div
           className="
             absolute
-            left-[-10%]
+            left-[-12%]
             top-[-10%]
-            h-[520px]
-            w-[520px]
+            h-[650px]
+            w-[650px]
             rounded-full
-            bg-cyan-200/30
-            blur-[160px]
+            bg-sky-200/40
+            blur-[180px]
           "
         />
 
@@ -44,80 +46,114 @@ export default function WhyXora() {
           className="
             absolute
             right-[-10%]
-            bottom-[-15%]
-            h-[620px]
-            w-[620px]
+            top-[10%]
+            h-[700px]
+            w-[700px]
             rounded-full
-            bg-sky-300/25
-            blur-[180px]
+            bg-cyan-200/35
+            blur-[220px]
+          "
+        />
+
+        <div
+          className="
+            absolute
+            bottom-[-15%]
+            left-1/2
+            h-[650px]
+            w-[650px]
+            -translate-x-1/2
+            rounded-full
+            bg-blue-100/30
+            blur-[220px]
           "
         />
 
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative">
 
-        {/* HEADER */}
+       {/* ================= HEADER ================= */}
 
-        <div className="grid gap-16 lg:grid-cols-2">
+        <div className="relative mx-auto max-w-7xl px-8">
 
-          {/* LEFT */}
+          <div className="grid items-start gap-20 lg:grid-cols-2">
 
-          <div>
+            {/* LEFT */}
 
-            <div className="flex items-center gap-4">
+            <div>
 
-              <span className="text-4xl font-light text-red-500">
-                {whyContent.number}
-              </span>
+              <div className="flex items-start gap-6">
 
-              <div className="h-px w-8 bg-neutral-300" />
+                <div className="flex items-start gap-5">
 
-              <span
-                className="
-                  text-xs
-                  uppercase
-                  tracking-[0.45em]
-                  text-neutral-500
-                "
-              >
-                {whyContent.label}
-              </span>
+                  <span className="text-5xl font-light text-[#4D8EFF]">
+                    {whyContent.number}
+                  </span>
+
+                  <div className="mt-2 h-36 w-px bg-[#4D8EFF]/40" />
+
+                </div>
+
+                <div>
+
+                  <p className="text-xs uppercase tracking-[0.45em] text-neutral-500">
+                    {whyContent.label}
+                  </p>
+
+                  <h2
+                    className="
+                      mt-4
+                      uppercase
+                      leading-[0.82]
+                      tracking-[-0.08em]
+                      font-black
+                    "
+                  >
+                    <span
+                      className="
+                        block
+                        text-[clamp(5rem,8vw,8rem)]
+                        text-neutral-900
+                      "
+                    >
+                      WHY
+                    </span>
+
+                    <span
+                      className="
+                        block
+                        text-[clamp(5rem,8vw,8rem)]
+                        bg-gradient-to-b
+                        from-[#76BBFF]
+                        via-[#2F84FF]
+                        to-[#0058EC]
+                        bg-clip-text
+                        text-transparent
+                      "
+                    >
+                      XORA
+                    </span>
+
+                  </h2>
+
+                </div>
+
+              </div>
 
             </div>
 
-            <h2
-              className="
-                mt-8
-                whitespace-pre-line
-                text-5xl
-                font-semibold
-                leading-[0.9]
-                tracking-[-0.06em]
-                text-neutral-900
-                lg:text-7xl
-              "
-            >
-              {whyContent.title}
-            </h2>
+            {/* RIGHT */}
 
-          </div>
+            <div className="flex justify-end">
 
-          {/* RIGHT */}
+              <div className="max-w-xl border-l border-neutral-300 pl-8">
 
-          <div className="flex justify-end">
+                <p className="text-xl leading-9 text-neutral-700">
+                  {whyContent.description}
+                </p>
 
-            <div className="max-w-xl border-l border-neutral-300 pl-8">
-
-              <p
-                className="
-                  text-lg
-                  leading-8
-                  text-neutral-600
-                "
-              >
-                {whyContent.description}
-              </p>
+              </div>
 
             </div>
 
@@ -125,71 +161,115 @@ export default function WhyXora() {
 
         </div>
 
-        {/* Gallery nanti */}
+        {/* ================= GALLERY ================= */}
 
-        <div className="mt-24">
+          <div className="relative mt-28 left-1/2 w-screen -translate-x-1/2">
 
-          {/* Row 1 */}
+            {/* Row Top */}
 
-          <div id="why-row-top" className="flex gap-8">
-            {topTemplates.map((image: StaticImageData, index: number) => (
+            <div className="w-full overflow-hidden">
+
               <div
-                key={index}
+                id="why-row-top"
                 className="
-                  relative
-                  h-[280px]
-                  w-[430px]
-                  shrink-0
-                  overflow-hidden
-                  rounded-[28px]
-                  bg-white
-                  shadow-xl
+                  why-scroll-left
+                  flex
+                  w-max
+                  gap-10
                 "
               >
-                <Image
-                  src={image}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
+
+                {topLoop.map((image, index) => (
+
+                  <div
+                    key={index}
+                    className="
+                      relative
+                      h-[300px]
+                      w-[480px]
+                      shrink-0
+                      overflow-hidden
+                      rounded-[34px]
+                      bg-white
+                      shadow-[0_30px_80px_rgba(0,0,0,.08)]
+                    "
+                  >
+
+                    <Image
+                      src={image}
+                      alt=""
+                      fill
+                      className="
+                        object-cover
+                        transition
+                        duration-700
+                        hover:scale-105
+                      "
+                    />
+
+                  </div>
+
+                ))}
+
               </div>
-            ))}
-          </div>
 
-          {/* Row 2 */}
+            </div>
 
-          <div
-            id="why-row-bottom"
-            className="mt-8 flex gap-8"
-          >
-            {bottomTemplates.map((image: StaticImageData, index: number) => (
+            {/* Row Bottom */}
+
+            <div className="mt-10 w-full overflow-hidden">
+
               <div
-                key={index}
+                id="why-row-bottom"
                 className="
-                  relative
-                  h-[280px]
-                  w-[430px]
-                  shrink-0
-                  overflow-hidden
-                  rounded-[28px]
-                  bg-white
-                  shadow-xl
+                  why-scroll-right
+                  flex
+                  w-max
+                  gap-10
                 "
               >
-                <Image
-                  src={image}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
+
+                {bottomLoop.map((image, index) => (
+
+                  <div
+                    key={index}
+                    className="
+                      relative
+                      h-[300px]
+                      w-[480px]
+                      shrink-0
+                      overflow-hidden
+                      rounded-[34px]
+                      bg-white
+                      shadow-[0_35px_90px_rgba(41,92,163,.12)]
+                    "
+                  >
+
+                    <Image
+                      src={image}
+                      alt=""
+                      fill
+                      className="
+                        object-cover
+                        transition
+                        duration-700
+                        hover:scale-105
+                      "
+                    />
+
+                  </div>
+
+                ))}
+
               </div>
-            ))}
+
+            </div>
+
           </div>
-
-        </div>
-
       </div>
+
       <WhyXoraTimeline />
+
     </section>
   );
 }

@@ -1,11 +1,11 @@
-import Process from "@/sections/home/process/Process";
+import Process from "@/sections/home/Process";
 import Hero from "@/components/home/hero/Hero";
 import PricingPreview from "@/sections/home/PricingPreview";
 import Trusted from "@/sections/home/Trusted";
 import ProductPreview from "@/sections/home/product/ProductPreview";
 import WhyXora from "@/sections/home/whyxora/WhyXora";
-import CTA from "@/sections/home/CTA";
-import PortfolioPreview from "@/sections/home/PortfolioPreview";
+import CTA from "@/sections/home/cta/CTA";
+import PortfolioPreview from "@/sections/home/portfolio/PortfolioPreview";
 import HomepageScrollTimeline from "@/components/animation/HomepageScrollTimeline";
 import ProductScrollTimeline from "@/components/animation/ProductScrollTimeline";
 export default function Home() {
