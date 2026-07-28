@@ -6,7 +6,6 @@ import FadeIn from "@/components/animation/FadeIn";
 export default function ContactForm() {
   return (
     <section
-      id="contact-form"
       className="bg-white py-32"
     >
       <div className="mx-auto max-w-7xl px-6">
