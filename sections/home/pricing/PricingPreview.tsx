@@ -253,7 +253,7 @@ export default function PricingView() {
                   font-bold
                   tracking-[-0.04em]
                   text-slate-900">
-                  2M
+                  1.000.000
                 </h3>
 
                 <span className="pb-2 text-slate-500">
@@ -377,30 +377,29 @@ export default function PricingView() {
 
               </div>
 
-              <p className="mt-10 text-slate-500">
-                Starting from
+              {/* Harga Awal Pembuatan */}
+              <p className="mt-8 text-slate-500">
+                Pembuatan Awal
               </p>
-
-              <div className="mt-2 flex items-end gap-2">
-
-                <h3
-                  className="
-                  text-6xl
-                  font-bold
-                  tracking-[-0.04em]
-                  text-slate-900
-                  "
-                >
-                  5M
+              <div className="mt-1 flex items-end gap-2">
+                <h3 className="text-4xl font-bold tracking-[-0.04em] text-slate-900">
+                  500.000
                 </h3>
-
-                <span className="pb-3 text-slate-500">
-                  IDR
-                </span>
-
+                <span className="pb-1 text-xs text-slate-500">IDR</span>
               </div>
 
-              <div className="my-10 h-px bg-slate-200/70" />
+              {/* Biaya Bulanan */}
+              <p className="mt-4 text-slate-500">
+                Biaya Bulanan
+              </p>
+              <div className="mt-1 flex items-end gap-2">
+                <h3 className="text-4xl font-bold tracking-[-0.04em] text-slate-900">
+                  300.000
+                </h3>
+                <span className="pb-1 text-xs text-slate-500">IDR / bln</span>
+              </div>
+
+              <div className="my-8 h-px bg-slate-200/70" />
 
               <ul className="space-y-5">
 
