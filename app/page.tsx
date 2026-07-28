@@ -1,4 +1,4 @@
-import Process from "@/sections/home/Process";
+import Process from "@/sections/home/process/Process";
 import Hero from "@/components/home/hero/Hero";
 import PricingPreview from "@/sections/home/pricing/PricingPreview";
 import Trusted from "@/sections/home/Trusted";
