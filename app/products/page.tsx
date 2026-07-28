@@ -1,26 +1,58 @@
-import Hero from "@/sections/products/Hero";
-import ProductList from "@/sections/products/ProductList";
-import FAQ from "@/sections/products/FAQ";
-import CTA from "@/sections/products/CTA";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Products",
+import { motion } from "framer-motion";
+import Hero from "./Hero";
+import ProductList from "./ProductList";
+import FAQ from "./FAQ";
+import CTA from "./CTA";
 
-  description:
-    "Berbagai layanan pembuatan website profesional dari XORA.",
-
-  alternates: {
-    canonical: "https://xora.id/products",
+// Variants untuk efek stagger animasi antar-section
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
   },
 };
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
 export default function ProductsPage() {
   return (
-    <main className="bg-white">
-      <Hero />
-      <ProductList />
-      <FAQ />
-      <CTA />
-    </main>
+    <motion.main
+      className="min-h-screen bg-white"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Hero Section */}
+      <motion.div variants={sectionVariants}>
+        <Hero />
+      </motion.div>
+
+      {/* Product List Section */}
+      <motion.div variants={sectionVariants}>
+        <ProductList />
+      </motion.div>
+
+      {/* FAQ Section */}
+      <motion.div variants={sectionVariants}>
+        <FAQ />
+      </motion.div>
+
+      {/* CTA Section */}
+      <motion.div variants={sectionVariants}>
+        <CTA />
+      </motion.div>
+    </motion.main>
   );
 }

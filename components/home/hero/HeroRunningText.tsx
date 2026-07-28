@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function HeroRunningText() {
   const items = [
     "DIGITAL MAKER EXPERIENCE",
@@ -19,52 +23,43 @@ export default function HeroRunningText() {
         left-0
         w-full
         overflow-hidden
-        border-y
-        border-black/5
-        bg-white/65
-        backdrop-blur-md
+        border-t
+        border-cyan-200/60
+        bg-white/70
+        backdrop-blur-xl
+        z-20
       "
     >
-      <div className="animate-marquee flex w-max whitespace-nowrap py-10 sm:py-12">
-
-        {[...Array(2)].map((_, i) => (
-          <div key={i} className="flex items-center">
-
-            {items.map((item, index) => (
-              <div
-                key={index}
-                className="mx-10 flex items-center sm:mx-14"
+      <div className="flex w-max whitespace-nowrap py-5 sm:py-6">
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            repeat: Infinity,
+            ease: "linear",
+            duration: 25,
+          }}
+          className="flex items-center"
+        >
+          {[...items, ...items].map((item, index) => (
+            <div key={index} className="flex items-center mx-6 sm:mx-10">
+              <span
+                className="
+                  text-[clamp(1rem,1.8vw,1.5rem)]
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  text-slate-800
+                "
               >
-                <span
-                  className="
-                    text-[clamp(1.75rem,3.1vw,3.25rem)]
-                    font-bold
-                    uppercase
-                    tracking-[-0.045em]
-                    text-black/85
-                  "
-                >
-                  {item}
-                </span>
+                {item}
+              </span>
 
-                <span
-                  className="
-                    mx-10
-                    text-[clamp(1.75rem,3.1vw,3.25rem)]
-                    font-extralight
-                    text-slate-300
-                    sm:mx-14
-                  "
-                >
-                  /
-                </span>
-
-              </div>
-            ))}
-
-          </div>
-        ))}
-
+              <span className="ml-10 text-cyan-500 font-extrabold">
+                ✦
+              </span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );
