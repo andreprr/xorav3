@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Hero from "./Hero";
 import ProductList from "./ProductList";
 import FAQ from "./FAQ";
 import CTA from "./CTA";
 
-// Variants untuk efek stagger animasi antar-section
-const containerVariants = {
+// 1. Berikan tipe eksplisit Variants
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -17,12 +17,16 @@ const containerVariants = {
   },
 };
 
-const sectionVariants = {
+// 2. Tambahkan 'as const' pada nilai ease agar di-infer sebagai literal type
+const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: {
+      duration: 0.5,
+      ease: "easeOut" as const, // <-- Kunci perbaikan di sini
+    },
   },
 };
 
@@ -34,22 +38,18 @@ export default function ProductsPage() {
       initial="hidden"
       animate="visible"
     >
-      {/* Hero Section */}
       <motion.div variants={sectionVariants}>
         <Hero />
       </motion.div>
 
-      {/* Product List Section */}
       <motion.div variants={sectionVariants}>
         <ProductList />
       </motion.div>
 
-      {/* FAQ Section */}
       <motion.div variants={sectionVariants}>
         <FAQ />
       </motion.div>
 
-      {/* CTA Section */}
       <motion.div variants={sectionVariants}>
         <CTA />
       </motion.div>
