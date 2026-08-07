@@ -1,20 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import corporate from "./assets/corporate.webp";
+
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-white">
-
       {/* Background Blur */}
       <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-blue-500/10 blur-3xl" />
       <div className="absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
 
       <div className="relative mx-auto flex min-h-[90vh] max-w-7xl items-center justify-between gap-20 px-6 py-24">
-
         {/* LEFT */}
         <div className="max-w-2xl">
-
           <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-600">
             Portfolio
           </span>
@@ -33,26 +33,19 @@ export default function Hero() {
           </p>
 
           <div className="mt-10 flex gap-4">
-
             <Button size="lg">
               Explore Portfolio
             </Button>
 
             <Link href="/contact">
-              <Button
-                variant="outline"
-                size="lg"
-              >
+              <Button variant="outline" size="lg">
                 Start Project
-
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-
           </div>
 
           <div className="mt-16 flex gap-12">
-
             <div>
               <h3 className="text-3xl font-bold">20+</h3>
               <p className="mt-2 text-sm text-slate-500">
@@ -73,25 +66,47 @@ export default function Hero() {
                 Custom Built
               </p>
             </div>
-
           </div>
-
         </div>
 
         {/* RIGHT */}
-
         <div className="relative flex-1">
+          <div className="group rounded-[32px] border border-slate-200 bg-white p-5 shadow-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(37,99,235,0.18)]">
+            {/* Image */}
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+              <Image
+                src={corporate}
+                alt="Corporate Website"
+                fill
+                priority
+                sizes="(max-width:768px) 100vw, 50vw"
+                className="object-cover transition-all duration-700 group-hover:scale-105"
+              />
 
-          <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-2xl transition duration-500 hover:-translate-y-2">
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
-            <div className="aspect-[16/10] rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200" />
+              {/* Shine Effect */}
+              <div
+                className="
+                  absolute
+                  inset-0
+                  -translate-x-full
+                  bg-gradient-to-r
+                  from-transparent
+                  via-white/20
+                  to-transparent
+                  transition-transform
+                  duration-1000
+                  group-hover:translate-x-full
+                "
+              />
+            </div>
 
+            {/* Content */}
             <div className="mt-6">
-
               <div className="flex items-center justify-between">
-
                 <div>
-
                   <span className="text-xs uppercase tracking-widest text-blue-600">
                     Featured Project
                   </span>
@@ -99,13 +114,11 @@ export default function Hero() {
                   <h3 className="mt-2 text-2xl font-bold">
                     Corporate Website
                   </h3>
-
                 </div>
 
                 <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-700">
                   Completed
                 </span>
-
               </div>
 
               <p className="mt-4 leading-7 text-slate-600">
@@ -114,11 +127,10 @@ export default function Hero() {
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
-
                 {[
                   "Next.js",
                   "TypeScript",
-                  "Tailwind",
+                  "Tailwind CSS",
                   "SEO",
                 ].map((tech) => (
                   <span
@@ -128,17 +140,11 @@ export default function Hero() {
                     {tech}
                   </span>
                 ))}
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }

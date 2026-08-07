@@ -4,12 +4,15 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FadeIn from "@/components/animation/FadeIn";
 
+import corporate from "./assets/corporate.webp";
+import dashboard from "./assets/dashboard.webp";
+
 const projects = [
   {
     title: "Corporate Website",
     category: "Company Profile",
     year: "2026",
-    image: "/portfolio/corporate.webp",
+    image: corporate,
     description:
       "Website company profile modern dengan desain premium yang membantu meningkatkan kredibilitas perusahaan, branding digital, serta menghasilkan lebih banyak calon pelanggan.",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "SEO"],
@@ -23,7 +26,7 @@ const projects = [
     title: "Business Dashboard",
     category: "Business System",
     year: "2026",
-    image: "/portfolio/dashboard.webp",
+    image: dashboard,
     description:
       "Dashboard bisnis modern untuk monitoring penjualan, laporan keuangan, stok barang, serta aktivitas bisnis secara real-time.",
     tech: ["Next.js", "Laravel API", "MySQL", "Chart.js"],
@@ -65,9 +68,8 @@ export default function FeaturedProjects() {
                 <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
 
                 <div
-                  className={`grid items-center gap-10 lg:grid-cols-2 ${
-                    index % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
-                  }`}
+                  className={`grid items-center gap-10 lg:grid-cols-2 ${index % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
+                    }`}
                 >
                   {/* Preview */}
                   <div className="relative p-8 lg:p-10">
@@ -76,7 +78,8 @@ export default function FeaturedProjects() {
                         src={project.image}
                         alt={project.title}
                         fill
-                        sizes="(max-width:768px)100vw,50vw"
+                        priority={index === 0}
+                        sizes="(max-width:768px) 100vw, 50vw"
                         className="object-cover transition duration-700 group-hover:scale-105"
                       />
                     </div>
