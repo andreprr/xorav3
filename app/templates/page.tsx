@@ -1,9 +1,9 @@
-import Hero from "@/sections/templates/Hero";
-import TemplateCategories from "@/sections/templates/TemplateCategories";
-import TemplateGallery from "@/sections/templates/TemplateGallery";
-import WhyTemplates from "@/sections/templates/WhyTemplates";
-import FAQ from "@/sections/templates/FAQ";
-import CTA from "@/sections/templates/CTA";
+import Hero from "@/app/templates/Hero";
+import TemplateCategories from "@/app/templates/TemplateCategories";
+import TemplateGallery from "@/app/templates/TemplateGallery";
+import WhyTemplates from "@/app/templates/WhyTemplates";
+import FAQ from "@/app/templates/FAQ";
+import CTA from "@/app/templates/CTA";
 
 export default function TemplatesPage() {
   return (

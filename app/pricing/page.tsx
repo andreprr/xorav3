@@ -1,7 +1,6 @@
 import Hero from "@/sections/pricing/Hero";
 import PricingCards from "@/sections/pricing/PricingCards";
 import Comparison from "@/sections/pricing/Comparison";
-import FAQ from "@/sections/pricing/FAQ";
 import CTA from "@/sections/pricing/CTA";
 
 export const metadata = {
@@ -21,7 +20,6 @@ export default function PricingPage() {
       <Hero />
       <PricingCards />
       <Comparison />
-      <FAQ />
       <CTA />
     </main>
   );

@@ -1,232 +1,305 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Staatliches } from "next/font/google";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
-// Import asset gambar
-import companyProfileImg from './assets/company-profile.webp';
-import landingPageImg from './assets/landing-page.webp';
-import dashboardSystemImg from './assets/dashboard-system.webp';
+// Import Asset Gambar Portofolio
+import companyProfileImg from "./assets/company-profile.webp";
+import landingPageImg from "./assets/landing-page.webp";
+import dashboardSystemImg from "./assets/dashboard-system.webp";
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
+// Import Font Staatliches dari Google Fonts
+const staatliches = Staatliches({
+  weight: "400",
+  subsets: ["latin"],
+});
+
+export interface PortfolioItem {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  image: any;
+  slug: string;
 }
 
-const portfolios = [
+const portfolios: PortfolioItem[] = [
   {
-    title: "Website Company Profile",
+    id: 1,
+    title: "WEBSITE COMPANY PROFILE",
     category: "Corporate Website",
-    tags: ["PROFESSIONAL", "TRUST"],
-    description: "Desain profesional dan modern untuk meningkatkan kepercayaan klien secara signifikan.",
+    description:
+      "DESAIN PROFESIONAL DAN MODERN UNTUK MENINGKATKAN KEPERCAYAAN CLIENT SECARA SIGNIFIKAN",
     image: companyProfileImg,
     slug: "/portfolio/company-profile",
   },
   {
-    title: "Landing Page Produk",
-    category: "Landing Page",
-    tags: ["CONVERSION", "ENGAGEMENT"],
-    description: "Halaman penawaran tinggi konversi dengan micro-interaction yang halus.",
+    id: 2,
+    title: "LANDING PAGE PRODUK",
+    category: "Marketing Website",
+    description:
+      "HALAMAN PENAWARAN TINGGI KONVERSI DENGAN EFEK INTERAKTIF YANG HALUS DAN MEMIKAT",
     image: landingPageImg,
     slug: "/portfolio/landing-page",
   },
   {
-    title: "Dashboard Sistem Bisnis",
+    id: 3,
+    title: "DASHBOARD SISTEM BISNIS",
     category: "Business System",
-    tags: ["INTUITIVE UI", "ANALYTICS"],
-    description: "UI/UX intuitif untuk manajemen data & analitik real-time yang kompleks.",
+    description:
+      "USER INTERFACE INTUITIF UNTUK MANAJEMEN DATA & ANALITIK REAL-TIME YANG KOMPLEKS",
     image: dashboardSystemImg,
     slug: "/portfolio/dashboard-system",
   },
 ];
 
+const TOTAL_SLOTS = 6;
+
+// Animasi Merge untuk Title "RECENT PROJECT"
+const mergeTitleVariant: Variants = {
+  hidden: { opacity: 0, y: 15, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+// Animasi Masuk Kanan ke Kiri untuk Konten Kiri
+const contentSlideVariant: Variants = {
+  initial: { opacity: 0, x: 45, filter: "blur(6px)" },
+  animate: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+  },
+  exit: {
+    opacity: 0,
+    x: -25,
+    filter: "blur(6px)",
+    transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function PortfolioPreview() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const dividerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  useGSAP(
-    () => {
-      if (!sectionRef.current || !containerRef.current) return;
-
-      const section = sectionRef.current;
-      const container = containerRef.current;
-
-      // 1. Animasi Header & Divider Entrance
-      const entranceTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
-        },
-      });
-
-      entranceTl
-        .from(titleRef.current, {
-          y: -40,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-        })
-        .from(
-          dividerRef.current,
-          {
-            scaleX: 0,
-            transformOrigin: 'left center',
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-          },
-          '-=0.4'
-        );
-
-      // 2. Animasi Masuk Card Aesthetic (Staggered Fade + Scale Up + Slide Up)
-      gsap.fromTo(
-        cardsRef.current,
-        {
-          opacity: 0,
-          y: 60,
-          scale: 0.92,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
-      // 3. Horizontal Scroll Calculation
-      const totalWidth = container.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      const xDistanceToScroll = totalWidth - viewportWidth;
-
-      if (xDistanceToScroll > 0) {
-        gsap.to(container, {
-          x: -xDistanceToScroll,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            pin: true,
-            scrub: 1,
-            start: 'top top',
-            end: () => `+=${totalWidth}`,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-    },
-    { scope: sectionRef }
-  );
+  const activeProject =
+    activeIndex !== null ? portfolios[activeIndex] : null;
 
   return (
-    <section 
-      ref={sectionRef} 
-      id="portfolio" 
-      /* REVISI 1: Background disesuaikan dengan gradasi biru-putih lembut referensi */
-      className="relative bg-gradient-to-br from-[#f3f9ff] via-[#e5f2fe] to-[#d6ebff] text-slate-900 overflow-hidden min-h-screen flex flex-col justify-between py-6 md:py-10"
+    <section
+      id="portfolio"
+      className="
+        relative
+        w-full
+        min-h-screen
+        bg-white
+        text-slate-900
+        font-sans
+        select-none
+        flex
+        flex-col
+        justify-between
+      "
     >
-      {/* Background Soft Glow Effect */}
-      <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-blue-300/30 rounded-full blur-[120px] pointer-events-none" />
+      {/* ── 1. GARIS MERAH ATAS LEBIH LEBAR (POIN 3) ── */}
+      <div className="w-full h-8 sm:h-10 lg:h-12 bg-[#E52323]" />
 
-      {/* --- HEADER SECTION --- */}
-      <div className="w-full px-6 lg:px-12 shrink-0 relative z-10">
-        <h2 
-          ref={titleRef}
-          className="text-[10vw] sm:text-[9.5vw] md:text-[8.5vw] lg:text-[7.8vw] leading-none font-black tracking-tight uppercase text-slate-900 whitespace-nowrap select-none w-full text-justify"
-        >
-          RECENT PROJECTS
-        </h2>
-
-        {/* Subheader Divider */}
-        <div 
-          ref={dividerRef}
-          className="mt-4 pt-3 border-t border-slate-400/30 flex flex-wrap items-center justify-between gap-4 text-xs font-semibold tracking-wider text-slate-700 uppercase"
-        >
-          <span>PORTFOLIO SHOWCASE</span>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 rounded-full bg-slate-900/10 text-slate-900 border border-slate-900/10 text-[10px]">PREMIUM</span>
-            <span className="px-3 py-1 rounded-full bg-slate-900/10 text-slate-900 border border-slate-900/10 text-[10px]">MODERN</span>
-            <span className="px-3 py-1 rounded-full bg-slate-900/10 text-slate-900 border border-slate-900/10 text-[10px]">TRANSPARENT</span>
-          </div>
-        </div>
-      </div>
-
-      {/* --- HORIZONTAL CONTAINER PORTFOLIO CARDS --- */}
-      <div 
-        ref={containerRef} 
-        className="flex gap-6 md:gap-8 px-6 lg:px-12 flex-nowrap items-center my-auto shrink-0 w-max pt-4 relative z-10"
-      >
-        {portfolios.map((item, index) => (
-          <div
-            key={item.title}
-            ref={(el) => { cardsRef.current[index] = el; }}
-            /* REVISI 2: Card ultra transparan dengan glassmorphism & soft border */
-            className="w-[85vw] md:w-[42vw] lg:w-[30vw] shrink-0 group relative flex flex-col overflow-hidden rounded-3xl border border-white/50 bg-white/20 backdrop-blur-xl p-3.5 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] transition-all duration-500 hover:-translate-y-2 hover:bg-white/35 hover:shadow-[0_12px_40px_0_rgba(31,38,135,0.12)] hover:border-white/80"
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-8 sm:py-12 flex-grow flex flex-col justify-between">
+        
+        {/* ── HEADER SECTION DENGAN FONT STAATLICHES PANJANG & BESAR (POIN 1) ── */}
+        <div className="w-full mb-6 sm:mb-8">
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={mergeTitleVariant}
+            className={`${staatliches.className} uppercase tracking-tight text-6xl sm:text-8xl lg:text-[7.5rem] text-slate-950 leading-none`}
           >
-            {/* Container Gambar Project */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-white/30 border border-white/40">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="(max-width: 768px) 85vw, (max-width: 1200px) 42vw, 30vw"
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                placeholder="blur"
-              />
-              
-              {/* Overlay Hover Button */}
-              <div className="absolute inset-0 bg-blue-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[3px]">
-                <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 text-slate-950 text-xs font-bold shadow-2xl transition-transform duration-300 group-hover:scale-105">
-                  Detail Project <ArrowUpRight size={15} />
-                </div>
-              </div>
-            </div>
+            RECENT PROJECT
+          </motion.h2>
 
-            {/* Content Body Kartu Transparan */}
-            <div className="flex flex-1 flex-col justify-between p-4">
-              <div>
-                <h3 className="text-lg md:text-xl font-bold text-slate-900 group-hover:text-blue-950 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="mt-1.5 text-xs md:text-sm text-slate-700/80 line-clamp-2 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
+          {/* Garis Pembatas Tipis */}
+          <div className="w-full h-[1px] bg-slate-200 mt-3 sm:mt-5" />
+        </div>
 
-              {/* Tag Chips Transparan */}
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {item.tags.map((tag) => (
-                  <span 
-                    key={tag} 
-                    className="px-2.5 py-1 text-[9px] font-bold rounded-full bg-white/40 border border-white/60 text-slate-900 tracking-wider backdrop-blur-sm"
+        {/* ── MAIN CONTENT GRID ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start flex-grow my-auto">
+          
+          {/* ========================================================= */}
+          {/* KOLOM KIRI: SHOWCASE GAMBAR, DESKRIPSI & VIEW BUTTON      */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-6 min-h-[350px] sm:min-h-[480px] flex flex-col justify-between w-full">
+            <AnimatePresence mode="wait">
+              {activeProject ? (
+                <motion.div
+                  key={activeProject.id}
+                  variants={contentSlideVariant}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="w-full flex flex-col items-start gap-5 sm:gap-6"
+                >
+                  {/* DESKRIPSI: HURUF BESAR SEMUA TAPI TIDAK BOLD (POIN 2) */}
+                  <h3
+                    className="
+                      font-sans
+                      font-normal
+                      uppercase
+                      tracking-tight
+                      text-lg sm:text-2xl lg:text-3xl
+                      text-slate-900
+                      leading-snug
+                      max-w-2xl
+                    "
                   >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+                    {activeProject.description}
+                  </h3>
+
+                  {/* Tombol VIEW */}
+                  <Link href={activeProject.slug}>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="
+                        bg-[#E52323]
+                        text-white
+                        font-sans
+                        font-black
+                        text-sm sm:text-base
+                        uppercase
+                        tracking-wider
+                        px-8 sm:px-10
+                        py-2.5 sm:py-3
+                        shadow-md
+                        hover:bg-red-700
+                        transition-colors
+                      "
+                    >
+                      VIEW
+                    </motion.button>
+                  </Link>
+
+                  {/* Gambar Mockup Portofolio */}
+                  <div className="relative w-full h-[220px] sm:h-[320px] lg:h-[380px] rounded-sm overflow-hidden border border-slate-200 shadow-lg bg-slate-50 mt-2">
+                    <Image
+                      src={activeProject.image}
+                      alt={activeProject.title}
+                      fill
+                      priority
+                      className="object-cover object-top"
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                /* Tampilan KOSONG Sebelum Ada Nomor yang Diklik */
+                <motion.div
+                  key="empty-placeholder"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full h-full min-h-[320px] flex items-center justify-center border-2 border-dashed border-slate-200 rounded-sm p-8 text-center"
+                >
+                  <p className="font-sans font-medium text-slate-400 text-sm sm:text-base tracking-widest uppercase">
+                    Pilih salah satu project di sebelah kanan
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* ========================================================= */}
+          {/* KOLOM KANAN: LIST NOMOR (TANPA KOTAK, DITURUNKAN SEJAJAR) */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-6 w-full pt-2 sm:pt-6 lg:pt-10 flex flex-col justify-between">
+            <div className="flex flex-col w-full">
+              {[...Array(TOTAL_SLOTS)].map((_, index) => {
+                const item = portfolios[index];
+                const isSelected = activeIndex === index;
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className={`
+                      w-full
+                      flex
+                      items-center
+                      py-3.5 sm:py-4.5
+                      px-2 sm:px-4
+                      border-b
+                      border-slate-300/80
+                      transition-all
+                      duration-200
+                      text-left
+                      group
+                      ${
+                        isSelected
+                          ? "bg-slate-50/80"
+                          : "hover:bg-slate-50/50"
+                      }
+                    `}
+                  >
+                    {/* Nomor Merah */}
+                    <span className="font-sans font-black text-xl sm:text-2xl text-[#E52323] w-10 sm:w-14 shrink-0">
+                      {index + 1}.
+                    </span>
+
+                    {/* Judul atau Dash Merah (-) */}
+                    {item ? (
+                      <span
+                        className={`
+                          font-sans
+                          font-black
+                          uppercase
+                          tracking-tight
+                          text-base sm:text-xl lg:text-2xl
+                          transition-colors
+                          ${
+                            isSelected
+                              ? "text-[#E52323]"
+                              : "text-slate-900 group-hover:text-[#E52323]"
+                          }
+                        `}
+                      >
+                        {item.title}
+                      </span>
+                    ) : (
+                      <span className="font-sans font-black text-xl sm:text-2xl text-[#E52323]">
+                        -
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Click Target */}
-            <Link href={item.slug} className="absolute inset-0 z-10">
-              <span className="sr-only">Lihat {item.title}</span>
-            </Link>
+            {/* Panah Bawah Navigasi */}
+            <div className="flex items-center justify-start sm:justify-center pt-6 sm:pt-8 pl-4">
+              <button
+                onClick={() => {
+                  const nextIdx =
+                    activeIndex === null
+                      ? 0
+                      : (activeIndex + 1) % portfolios.length;
+                  setActiveIndex(nextIdx);
+                }}
+                className="p-2 sm:p-3 rounded-full hover:bg-slate-100 transition-all active:scale-90 group"
+                title="Next project"
+              >
+                <ArrowDown className="h-6 w-6 sm:h-7 sm:w-7 text-[#E52323] animate-bounce" />
+              </button>
+            </div>
           </div>
-        ))}
 
+        </div>
       </div>
     </section>
   );

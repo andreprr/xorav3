@@ -1,32 +1,173 @@
+"use client";
+
+import { useRef } from "react";
+import { Staatliches } from "next/font/google";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+
+// Import Font Staatliches untuk Header XORA STUDIO
+const staatliches = Staatliches({
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export default function Hero() {
+  const containerRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const paragraphsRef = useRef<HTMLDivElement>(null);
+  const footerLabelRef = useRef<HTMLDivElement>(null);
+
+  // ── GSAP PREMIUM ENTRANCE ANIMATION ──
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power4.out" },
+      });
+
+      // 1. Title Entrance (Scale Up + Slide Up + Blur Fade)
+      if (titleRef.current) {
+        tl.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 70, filter: "blur(12px)", scale: 0.95 },
+          { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 1.4 }
+        );
+      }
+
+      // 2. Micro Label "ABOUT XORA" Fade In
+      if (badgeRef.current) {
+        tl.fromTo(
+          badgeRef.current,
+          { opacity: 0, x: 20 },
+          { opacity: 1, x: 0, duration: 1 },
+          "-=1.1"
+        );
+      }
+
+      // 3. Paragraphs Entrance Staggered
+      if (paragraphsRef.current) {
+        const paragraphEls = paragraphsRef.current.querySelectorAll("p");
+        tl.fromTo(
+          paragraphEls,
+          { opacity: 0, y: 40, filter: "blur(8px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1.1,
+            stagger: 0.2,
+          },
+          "-=0.9"
+        );
+      }
+
+      // 4. Footer Label Entrance
+      if (footerLabelRef.current) {
+        tl.fromTo(
+          footerLabelRef.current,
+          { opacity: 0 },
+          { opacity: 0.8, duration: 1 },
+          "-=0.6"
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <section className="relative overflow-hidden bg-white py-32">
-
-      <div className="absolute -left-40 top-10 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
-      <div className="absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
-
-      <div className="relative mx-auto max-w-5xl px-6 text-center">
-
-        <span className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
-          About XORA
-        </span>
-
-        <h1 className="mt-8 text-6xl font-bold tracking-tight leading-tight">
-          We Build Digital
-          <br />
-          Experiences That
-          <br />
-          Grow Businesses.
+    <section
+      ref={containerRef}
+      className="
+        relative
+        w-full
+        min-h-screen
+        bg-black
+        text-[#ECEBE6]
+        font-sans
+        select-none
+        overflow-hidden
+        flex
+        flex-col
+        justify-between
+        px-6 sm:px-12 lg:px-20
+        py-12 sm:py-16 lg:py-20
+      "
+    >
+      {/* ── 1. TOP HEADER SECTION (XORA STUDIO & ABOUT XORA) ── */}
+      <div className="w-full max-w-[1650px] mx-auto flex items-start justify-between gap-6 pt-4 sm:pt-8">
+        
+        {/* GIANT TITLE "XORA STUDIO" */}
+        <h1
+          ref={titleRef}
+          className={`
+            ${staatliches.className}
+            uppercase
+            tracking-tight
+            leading-[0.82]
+            text-[clamp(4.2rem,14vw,12.5rem)]
+            text-[#ECEBE6]
+          `}
+        >
+          XORA STUDIO
         </h1>
 
-        <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-slate-600">
-          XORA adalah digital agency yang berfokus pada website modern,
-          landing page, dashboard, dan solusi digital yang membantu bisnis
-          berkembang lebih cepat.
-        </p>
+        {/* MICRO LABEL "ABOUT XORA" */}
+        <span
+          ref={badgeRef}
+          className="
+            font-sans
+            font-bold
+            text-xs sm:text-sm lg:text-base
+            uppercase
+            tracking-widest
+            text-[#ECEBE6]/90
+            pt-2 sm:pt-4
+            shrink-0
+          "
+        >
+          ABOUT XORA
+        </span>
 
       </div>
 
+      {/* ── 2. MAIN PARAGRAPH CONTENT ── */}
+      <div className="w-full max-w-[1650px] mx-auto my-auto py-8 sm:py-12">
+        <div
+          ref={paragraphsRef}
+          className="max-w-4xl space-y-6 sm:space-y-8 font-sans font-normal text-base sm:text-xl lg:text-2xl leading-relaxed text-[#ECEBE6]/90"
+        >
+          {/* Paragraf 1 */}
+          <p>
+            XORA adalah digital studio yang menghadirkan solusi digital modern untuk membantu bisnis
+            membangun identitas, sistem, dan pengalaman digital yang lebih kuat.
+          </p>
+
+          {/* Paragraf 2 */}
+          <p>
+            XORA berfokus pada pengembangan website premium, digital templates, custom business
+            systems, dan digital automation yang dirancang dengan perpaduan antara desain, teknologi,
+            dan kebutuhan nyata sebuah bisnis.
+          </p>
+
+          {/* Paragraf 3 */}
+          <p>
+            Kami tidak hanya membangun produk digital. Kami membangun digital experience yang
+            membantu bisnis tampil lebih profesional, bekerja lebih efisien, dan berkembang lebih cepat.
+          </p>
+        </div>
+      </div>
+
+      {/* ── 3. FOOTER METADATA LABEL (XORA 2026) ── */}
+      <div className="w-full max-w-[1650px] mx-auto pb-2 sm:pb-4">
+        <div
+          ref={footerLabelRef}
+          className="font-mono font-bold text-xs sm:text-sm uppercase tracking-widest text-[#ECEBE6]"
+        >
+          XORA 2026
+        </div>
+      </div>
     </section>
   );
 }

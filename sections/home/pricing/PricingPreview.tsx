@@ -1,656 +1,319 @@
 "use client";
 
-import { ArrowRight, Check } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { Staatliches } from "next/font/google";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ArrowRight, ChevronsLeft } from "lucide-react";
 import usePricingGsap from "./usePricingGsap";
 
+// Import Font Staatliches dari Google Fonts untuk Judul
+const staatliches = Staatliches({
+  weight: "400",
+  subsets: ["latin"],
+});
+
+// Custom Easing
+const cubicEase = [0.16, 1, 0.3, 1] as const;
+
+// Interface Paket
+interface PricingPlan {
+  id: string;
+  name: string;
+  subtitle: string;
+  price: string;
+  period?: string;
+  hasInitialFee?: boolean;
+  initialPrice?: string;
+  features: string[];
+  ctaUrl: string;
+}
+
+const pricingPlans: PricingPlan[] = [
+  {
+    id: "starter",
+    name: "STARTER",
+    subtitle: "STARTING FROM",
+    price: "1.000.000 IDR",
+    features: [
+      "COMPANY PROFILE WEBSITE",
+      "RESPONSIVE DESIGN",
+      "BASIC SEO",
+      "FREE DOMAIN",
+    ],
+    ctaUrl: "/contact?plan=starter",
+  },
+  {
+    id: "business",
+    name: "BUSINESS",
+    subtitle: "PEMBUATAN AWAL & BULANAN",
+    price: "300.000 IDR / bln",
+    hasInitialFee: true,
+    initialPrice: "500.000 IDR (Awal)",
+    features: [
+      "LANDING PAGE / COMPANY WEBSITE",
+      "CMS DASHBOARD",
+      "SEO OPTIMIZATION",
+      "3 MONTHS SUPPORT",
+    ],
+    ctaUrl: "/contact?plan=business",
+  },
+  {
+    id: "enterprise",
+    name: "ENTERPRISE",
+    subtitle: "FLEXIBLE PLAN",
+    price: "CUSTOM PRICING",
+    features: [
+      "BUSINESS SYSTEM",
+      "ADMIN DASHBOARD",
+      "API INTEGRATION",
+      "MAINTENANCE & SUPPORT",
+    ],
+    ctaUrl: "/contact?plan=enterprise",
+  },
+];
+
+// Variant Animasi Masuk Section (Slide Up + Blur Fade)
+const sectionEntranceVariant: Variants = {
+  hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: cubicEase },
+  },
+};
+
+// Variant Animasi Konten Kiri saat Berganti Paket
+const leftContentVariant: Variants = {
+  initial: { opacity: 0, x: -30, filter: "blur(8px)" },
+  animate: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, ease: cubicEase },
+  },
+  exit: {
+    opacity: 0,
+    x: 20,
+    filter: "blur(8px)",
+    transition: { duration: 0.25, ease: cubicEase },
+  },
+};
+
 export default function PricingView() {
+  // Hubungkan Hook GSAP Asli
   usePricingGsap();
+
+  // State Pilihan Paket (Default: STARTER)
+  const [selectedPlanId, setSelectedPlanId] = useState<string>("starter");
+
+  const activePlan =
+    pricingPlans.find((p) => p.id === selectedPlanId) || pricingPlans[0];
 
   return (
     <section
       id="pricing"
       className="
         relative
+        w-full
+        min-h-screen
+        bg-[#E52323]
+        text-white
+        font-sans
         overflow-hidden
-        bg-[#fcfdff]
-        py-32
+        select-none
+        flex
+        flex-col
+        justify-between
+        py-8 sm:py-12 lg:py-16
       "
     >
-      {/* ========================================= */}
-      {/* Crystal Background */}
-      {/* ========================================= */}
-
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
-        {/* Top Glow */}
-
-        <div
-          className="
-            absolute
-            -top-56
-            left-1/2
-            h-[900px]
-            w-[900px]
-            -translate-x-1/2
-            rounded-full
-            bg-sky-200/30
-            blur-[190px]
-          "
-        />
-
-        {/* Left Glow */}
-
-        <div
-          className="
-            absolute
-            top-1/3
-            -left-64
-            h-[700px]
-            w-[700px]
-            rounded-full
-            bg-cyan-100/40
-            blur-[180px]
-          "
-        />
-
-        {/* Right Glow */}
-
-        <div
-          className="
-            absolute
-            bottom-0
-            -right-64
-            h-[700px]
-            w-[700px]
-            rounded-full
-            bg-blue-100/35
-            blur-[180px]
-          "
-        />
-
-        {/* Center Glow */}
-
-        <div
-          className="
-            absolute
-            left-1/2
-            top-1/2
-            h-[1100px]
-            w-[1100px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            bg-white/70
-            blur-[220px]
-          "
-        />
-
-        {/* Bottom Glow */}
-
-        <div
-          className="
-            absolute
-            -bottom-48
-            left-1/3
-            h-[500px]
-            w-[500px]
-            rounded-full
-            bg-sky-300/20
-            blur-[150px]
-          "
-        />
-
-        {/* Crystal Texture */}
-
-        <div
-          className="
-            absolute
-            inset-0
-            opacity-[0.06]
-            [background-image:radial-gradient(circle_at_1px_1px,#7dd3fc_1px,transparent_0)]
-            [background-size:28px_28px]
-          "
-        />
-
-      </div>
-
-      {/* ========================================= */}
-      {/* Content */}
-      {/* ========================================= */}
-
-      <div
-        className="
-          relative
-          z-10
-          mx-auto
-          max-w-7xl
-          px-6
-        "
-      >
-
-        {/* ========================================= */}
-        {/* Header */}
-        {/* ========================================= */}
-
-        <div
-          id="pricing-header"
-          className="
-            mx-auto
-            max-w-3xl
-            text-center
-          "
+      <div className="w-full max-w-[1650px] mx-auto px-6 sm:px-10 lg:px-14 flex-grow flex flex-col justify-center">
+        
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={sectionEntranceVariant}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full my-auto"
         >
+          
+          {/* ========================================================= */}
+          {/* KOLOM KIRI: TITLE "PRICING" + DETAIL PAKET YANG DIPILIH   */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-6 flex flex-col justify-between items-start space-y-6 sm:space-y-8">
+            
+            {/* A. HEADER "PRICING" + SLASHED BARS (///////) */}
+            <div className="w-full border-b border-white/20 pb-6">
+              <h1
+                className={`${staatliches.className} uppercase tracking-tight leading-[0.82] text-[clamp(4rem,10vw,9.5rem)] text-white drop-shadow-sm`}
+              >
+                PRICING
+              </h1>
 
-          <span
-            className="
-              inline-flex
-              items-center
-              rounded-full
-              border
-              border-white/70
-              bg-white/60
-              px-5
-              py-2
-              text-xs
-              font-semibold
-              uppercase
-              tracking-[0.35em]
-              text-slate-600
-              backdrop-blur-xl
-              shadow-[0_10px_40px_rgba(255,255,255,.45)]
-            "
-          >
-            Pricing
-          </span>
-
-          <h2 className="
-            mt-8
-            text-5xl
-            font-medium            
-            tracking-[-0.045em]
-            text-slate-900
-            md:text-7xl
-            ">
-            CHOOSE THE PERFECT PLAN
-          </h2>
-
-          <p
-            className="
-              mx-auto
-              mt-8
-              max-w-2xl
-              text-lg
-              leading-9
-              text-slate-600
-            "
-          >
-            Flexible pricing plans designed to help businesses of every
-            size build high-quality digital solutions.
-          </p>
-
-        </div>
-
-        {/* ========================================= */}
-        {/* Pricing Cards */}
-        {/* ========================================= */}
-
-        <div
-          id="pricing-cards"
-          className="
-            mt-24
-            grid
-            gap-8
-            lg:grid-cols-3
-            items-end
-          "
-        >
-          {/* ================================================= */}
-          {/* STARTER */}
-          {/* ================================================= */}
-
-          <article
-            className="
-              pricing-card
-              group
-              relative
-              overflow-hidden
-              rounded-[32px]
-              border
-              border-white/60
-              bg-white/55
-              p-8
-              backdrop-blur-3xl
-              shadow-[0_20px_60px_rgba(15,23,42,.08)]
-              transition-all
-              duration-500
-              hover:-translate-y-2
-              hover:shadow-[0_30px_80px_rgba(59,130,246,.12)]
-            "
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/10 to-sky-100/20" />
-
-            <div className="relative z-10">
-
-              <div className="flex items-center justify-between">
-
-                <span className="text-2xl font-semibold tracking-tight">
-                  STARTER
-                </span>
-
-                <div className="rounded-2xl bg-sky-100 p-3">
-                  <Check className="h-5 w-5 text-sky-600" />
-                </div>
-
-              </div>
-
-              <p className="mt-8 text-slate-500">
-                Starting from
-              </p>
-
-              <div className="mt-2 flex items-end gap-2">
-
-                <h3 className="text-6xl
-                  font-bold
-                  tracking-[-0.04em]
-                  text-slate-900">
-                  1.000.000
-                </h3>
-
-                <span className="pb-2 text-slate-500">
-                  IDR
-                </span>
-
-              </div>
-
-              <div className="my-10 h-px bg-slate-200" />
-
-              <ul className="space-y-5">
-
-                {[
-                  "Company Profile Website",
-                  "Responsive Design",
-                  "Basic SEO",
-                  "Free Domain",
-                ].map((item) => (
-
-                  <li
-                    key={item}
-                    className="flex items-center gap-3"
-                  >
-                    <Check
-                      size={18}
-                      className="text-sky-600"
-                    />
-
-                    <span className="text-slate-600">
-                      {item}
-                    </span>
-
-                  </li>
-
+              {/* Slanted Graphic Bars (///////) */}
+              <div className="flex items-center gap-1.5 sm:gap-2 text-white pt-2">
+                {[...Array(9)].map((_, i) => (
+                  <span
+                    key={i}
+                    className="h-5 sm:h-7 w-2 sm:w-2.5 bg-white -skew-x-[25deg] inline-block shadow-sm"
+                  />
                 ))}
-
-              </ul>
-
+                <span className="h-2 sm:h-3 w-6 sm:w-8 bg-white inline-block ml-1 self-end mb-0.5" />
+              </div>
             </div>
 
-          </article>
+            {/* B. DYNAMIC KONTEN PAKET KIRI (BUNGKUSAN BORDER PUTIH MENTOK) */}
+            <div className="w-full min-h-[320px] sm:min-h-[380px] border-2 border-white p-6 sm:p-8 lg:p-10 flex flex-col justify-between relative bg-red-600/20 backdrop-blur-sm">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activePlan.id}
+                  variants={leftContentVariant}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="flex flex-col justify-between h-full space-y-6"
+                >
+                  <div>
+                    {/* Subtitle / Label Pembuat */}
+                    <p className="font-mono text-xs sm:text-sm font-bold tracking-widest text-white/90 uppercase">
+                      {activePlan.subtitle}
+                    </p>
 
-          {/* ================================================= */}
-          {/* BUSINESS */}
-          {/* ================================================= */}
+                    {/* Harga Paket */}
+                    <div className="mt-1 flex flex-col sm:flex-row sm:items-baseline gap-2">
+                      <h2 className="font-sans font-black text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white">
+                        {activePlan.price}
+                      </h2>
+                      {activePlan.hasInitialFee && (
+                        <span className="text-xs sm:text-sm font-semibold text-white/80">
+                          + {activePlan.initialPrice}
+                        </span>
+                      )}
+                    </div>
 
-          <article
-            className="
-              pricing-card
-              group
-              relative
-              -translate-y-8
-              overflow-hidden
-              rounded-[36px]
-              border
-              border-white/70
-              bg-white/65
-              p-10
-              backdrop-blur-[30px]
-              shadow-[0_45px_120px_rgba(59,130,246,.18)]
-              transition-all
-              duration-500
-              hover:-translate-y-10
-            "
-          >
+                    {/* Fitur List Bullet Point */}
+                    <ul className="mt-6 sm:mt-8 space-y-2.5 sm:space-y-3 font-sans font-bold text-sm sm:text-base lg:text-lg text-white">
+                      {activePlan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center gap-3">
+                          <span className="h-2 w-2 rounded-full bg-white shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-            {/* Blue Glow */}
+                  {/* Tombol CTA Start Project Style (Gaya Hero Button) */}
+                  <div className="pt-4">
+                    <Link href={activePlan.ctaUrl}>
+                      <motion.button
+                        whileHover={{ y: -3, scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="
+                          group
+                          inline-flex
+                          items-center
+                          justify-center
+                          h-13 sm:h-14
+                          px-8 sm:px-10
+                          bg-white
+                          text-slate-950
+                          font-sans
+                          font-black
+                          text-sm sm:text-base
+                          uppercase
+                          tracking-wider
+                          rounded-none
+                          shadow-lg
+                          transition-all
+                          duration-300
+                          hover:bg-slate-100
+                        "
+                      >
+                        <span>START {activePlan.name} PROJECT</span>
+                        <ArrowRight className="ml-3 h-5 w-5 text-slate-950 transition-transform duration-300 group-hover:translate-x-1.5" />
+                      </motion.button>
+                    </Link>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-            <div
-              className="
-                absolute
-                left-1/2
-                bottom-0
-                h-56
-                w-72
-                -translate-x-1/2
-                rounded-full
-                bg-sky-400/25
-                blur-[90px]
-              "
-            />
+          </div>
 
-            {/* Reflection */}
+          {/* ========================================================= */}
+          {/* KOLOM KANAN: LIST PILIHAN PAKET (OUTLINE vs SOLID WHITE)   */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-6 flex flex-col justify-center space-y-6 sm:space-y-8 lg:pl-6 border-t lg:border-t-0 lg:border-l border-white/20 pt-8 lg:pt-0">
+            {pricingPlans.map((plan) => {
+              const isSelected = plan.id === selectedPlanId;
 
-            <div
-              className="
-                absolute
-                inset-0
-                bg-gradient-to-br
-                from-white/65
-                via-white/5
-                to-sky-200/30
-              "
-            />
-
-            <div className="relative z-10">
-
-              <div className="flex items-center justify-between">
-
-                <span className="text-3xl font-semibold tracking-tight">
-                  BUSINESS
-                </span>
-
-                <span
+              return (
+                <div
+                  key={plan.id}
+                  onClick={() => setSelectedPlanId(plan.id)}
                   className="
-                    rounded-full
-                    border
-                    border-white/70
-                    bg-white/60
-                    px-4
-                    py-2
-                    text-[11px]
-                    font-bold
-                    uppercase
-                    tracking-[0.2em]
-                    backdrop-blur-xl
+                    group
+                    cursor-pointer
+                    flex
+                    items-center
+                    justify-between
+                    py-2 sm:py-4
+                    border-b
+                    border-white/20
+                    transition-all
+                    duration-300
                   "
                 >
-                  MOST POPULAR
-                </span>
-
-              </div>
-
-              {/* Harga Awal Pembuatan */}
-              <p className="mt-8 text-slate-500">
-                Pembuatan Awal
-              </p>
-              <div className="mt-1 flex items-end gap-2">
-                <h3 className="text-4xl font-bold tracking-[-0.04em] text-slate-900">
-                  500.000
-                </h3>
-                <span className="pb-1 text-xs text-slate-500">IDR</span>
-              </div>
-
-              {/* Biaya Bulanan */}
-              <p className="mt-4 text-slate-500">
-                Biaya Bulanan
-              </p>
-              <div className="mt-1 flex items-end gap-2">
-                <h3 className="text-4xl font-bold tracking-[-0.04em] text-slate-900">
-                  300.000
-                </h3>
-                <span className="pb-1 text-xs text-slate-500">IDR / bln</span>
-              </div>
-
-              <div className="my-8 h-px bg-slate-200/70" />
-
-              <ul className="space-y-5">
-
-                {[
-                  "Landing Page / Company Website",
-                  "CMS Dashboard",
-                  "SEO Optimization",
-                  "3 Months Support",
-                ].map((item) => (
-
-                  <li
-                    key={item}
-                    className="flex items-center gap-3"
+                  {/* PANAH IKON CHEVRONS KIRI (GAYA REFERENSI) */}
+                  <div
+                    className={`
+                      flex items-center justify-center transition-all duration-300
+                      ${
+                        isSelected
+                          ? "opacity-100 translate-x-0 text-white"
+                          : "opacity-40 -translate-x-2 text-white/50 group-hover:opacity-100 group-hover:translate-x-0"
+                      }
+                    `}
                   >
-                    <Check
-                      size={18}
-                      className="text-sky-600"
-                    />
+                    <ChevronsLeft className="h-8 sm:h-12 lg:h-16 w-8 sm:w-12 lg:w-16" />
+                  </div>
 
-                    <span className="text-slate-700">
-                      {item}
-                    </span>
-
-                  </li>
-
-                ))}
-
-              </ul>
-
-            </div>
-
-          </article>
-
-          {/* ================================================= */}
-          {/* ENTERPRISE */}
-          {/* ================================================= */}
-
-          <article
-            className="
-              pricing-card
-              group
-              relative
-              overflow-hidden
-              rounded-[32px]
-              border
-              border-white/60
-              bg-white/55
-              p-8
-              backdrop-blur-3xl
-              shadow-[0_20px_60px_rgba(15,23,42,.08)]
-              transition-all
-              duration-500
-              hover:-translate-y-2
-              hover:shadow-[0_30px_80px_rgba(59,130,246,.12)]
-            "
-          >
-            {/* Reflection */}
-
-            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/10 to-sky-100/20" />
-
-            <div className="relative z-10">
-
-              <div className="flex items-center justify-between">
-
-                <span className="text-2xl font-semibold tracking-tight">
-                  ENTERPRISE
-                </span>
-
-                <div className="rounded-2xl bg-sky-100 p-3">
-                  <Check className="h-5 w-5 text-sky-600" />
+                  {/* NAMA PAKET: SOLID JIKA TERPILIH, OUTLINE JIKA TIDAK (POIN 3) */}
+                  <h3
+                    className={`
+                      ${staatliches.className}
+                      uppercase
+                      tracking-tight
+                      text-[clamp(3.5rem,8vw,7.5rem)]
+                      leading-none
+                      transition-all
+                      duration-300
+                      text-right
+                      ${
+                        isSelected
+                          ? "text-white drop-shadow-md"
+                          : "text-transparent [-webkit-text-stroke:2px_white] opacity-80 group-hover:opacity-100 group-hover:[-webkit-text-stroke:2.5px_white]"
+                      }
+                    `}
+                  >
+                    {plan.name}
+                  </h3>
                 </div>
+              );
+            })}
+          </div>
 
-              </div>
-
-              <p className="mt-8 text-slate-500">
-                Flexible Plan
-              </p>
-
-              <div className="mt-2">
-
-                <h3 className="text-5xl font-black">
-                  Custom
-                </h3>
-
-                <span className="text-slate-500">
-                  Pricing
-                </span>
-
-              </div>
-
-              <div className="my-10 h-px bg-slate-200" />
-
-              <ul className="space-y-5">
-
-                {[
-                  "Business System",
-                  "Admin Dashboard",
-                  "API Integration",
-                  "Maintenance & Support",
-                ].map((item) => (
-
-                  <li
-                    key={item}
-                    className="flex items-center gap-3"
-                  >
-                    <Check
-                      size={18}
-                      className="text-sky-600"
-                    />
-
-                    <span className="text-slate-600">
-                      {item}
-                    </span>
-
-                  </li>
-
-                ))}
-
-              </ul>
-
-            </div>
-
-          </article>
-
-        </div>
-
-        {/* ========================================= */}
-        {/* CTA */}
-        {/* ========================================= */}
-
-        <div
-          id="pricing-cta"
-          className="
-            mt-24
-            flex
-            justify-center
-          "
-        >
-
-          <button
-            className="
-              pricing-button
-              group
-              relative
-              overflow-hidden
-              rounded-full
-              border
-              border-white/70
-              bg-white/60
-              px-10
-              py-5
-              backdrop-blur-3xl
-              shadow-[0_20px_60px_rgba(59,130,246,.12)]
-              transition-all
-              duration-500
-              hover:-translate-y-1
-              hover:shadow-[0_35px_90px_rgba(59,130,246,.18)]
-            "
-          >
-
-            {/* Glow */}
-
-            <div
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-32
-                w-56
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-sky-300/30
-                blur-[70px]
-                transition-all
-                duration-500
-                group-hover:bg-sky-400/40
-              "
-            />
-
-            {/* Reflection */}
-
-            <div
-              className="
-                absolute
-                inset-0
-                bg-gradient-to-br
-                from-white/60
-                via-white/5
-                to-sky-100/20
-              "
-            />
-
-            {/* Shine */}
-
-            <div
-              className="
-                absolute
-                -left-24
-                top-0
-                h-full
-                w-24
-                rotate-12
-                bg-white/60
-                blur-xl
-                transition-all
-                duration-700
-                group-hover:left-[130%]
-              "
-            />
-
-            <div
-              className="
-                relative
-                z-10
-                flex
-                items-center
-                gap-4
-              "
-            >
-
-              <span
-                className="
-                  text-sm
-                  font-bold
-                  uppercase
-                  tracking-[0.25em]
-                  text-slate-800
-                "
-              >
-                View Full Pricing
-              </span>
-
-              <ArrowRight
-                className="
-                  h-5
-                  w-5
-                  transition-transform
-                  duration-300
-                  group-hover:translate-x-1.5
-                "
-              />
-
-            </div>
-
-          </button>
-
-        </div>
+        </motion.div>
 
       </div>
 
+      {/* FOOTER SIDE LABEL MINIMALIS */}
+      <div className="w-full max-w-[1650px] mx-auto px-6 sm:px-10 lg:px-14 pt-6 flex items-center justify-between font-mono text-[10px] sm:text-xs text-white/70 uppercase tracking-widest border-t border-white/10 mt-8">
+        <span>XORA STUDIO 2026</span>
+        <span>PRICING & PLANS SHOWCASE</span>
+      </div>
     </section>
   );
 }

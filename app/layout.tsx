@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { manrope, vercetti } from "./fonts";
 import LoadingScreen from "@/components/animation/LoadingScreen";
-import LayoutContent from "@/components/layout/LayoutContent";
+import Navbar from "@/components/layout/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,14 +37,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${vercetti.variable}`}
-  >
-      <body className="min-h-screen overflow-x-hidden">
+      /* TAMBAHKAN inter.variable DI SINI */
+      className={`${inter.variable} ${manrope.variable} ${vercetti.variable}`}
+    >
+      <body className="min-h-screen overflow-x-hidden font-sans">
         <LoadingScreen />
-
-        <LayoutContent>
-          {children}
-        </LayoutContent>
+        <Navbar />
+        {children}
       </body>
     </html>
   );

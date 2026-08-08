@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-[#fafafa] text-neutral-900 flex flex-col justify-between p-6 sm:p-10 lg:p-14 font-sans select-none">
+    <section className="relative min-h-screen w-full overflow-hidden bg-white text-neutral-900 flex flex-col justify-between p-6 sm:p-10 lg:p-14 font-sans select-none">
       {/* Decorative Plus / Cross Accents */}
       <span className="absolute top-20 left-10 text-xs font-light text-neutral-400 opacity-60">
         +
@@ -29,17 +29,20 @@ export default function Hero() {
       {/* ======================================= */}
       <div className="relative my-auto w-full text-center flex items-center justify-center">
         <h1 className="w-full text-[12.5vw] sm:text-[13.5vw] lg:text-[14.5vw] font-black leading-none tracking-[-0.06em] uppercase font-sans text-neutral-950 scale-y-125 my-8 whitespace-nowrap">
-          XORA STUDIO
+          XORA{" "}
+          <span className="bg-gradient-to-r from-[#E52323] via-red-800 to-slate-950 bg-clip-text text-transparent drop-shadow-sm">
+            STUDIO
+          </span>
         </h1>
 
         {/* FLOATING BADGE IN THE CENTER */}
         <div className="absolute top-1/2 left-[70%] -translate-x-1/2 -translate-y-1/2 z-10">
           {/* Subtle Glow Behind Badge */}
-          <div className="absolute inset-0 rounded-2xl bg-sky-400/35 blur-2xl scale-110" />
+          <div className="absolute inset-0 rounded-2xl bg-red-500/20 blur-2xl scale-110" />
 
           {/* Badge Card */}
-          <div className="relative rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md px-5 py-2 sm:px-8 sm:py-4 border border-white/80 shadow-[0_15px_30px_rgba(0,0,0,0.1)]">
-            <span className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
+          <div className="relative rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md px-5 py-2 sm:px-8 sm:py-4 border border-slate-200 shadow-[0_15px_30px_rgba(0,0,0,0.08)]">
+            <span className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight bg-gradient-to-r from-[#E52323] to-slate-950 bg-clip-text text-transparent">
               XORA
             </span>
           </div>
@@ -63,13 +66,13 @@ export default function Hero() {
         <div className="lg:col-span-4 flex items-center gap-8">
           <Link
             href="#product-list"
-            className="text-xs sm:text-sm font-semibold text-neutral-900 hover:text-neutral-500 transition-colors uppercase tracking-wider"
+            className="text-xs sm:text-sm font-semibold text-[#E52323] hover:text-red-700 transition-colors uppercase tracking-wider"
           >
             Explore Products
           </Link>
 
           <div className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-neutral-900" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#E52323]" />
             <span className="h-1 w-1 rounded-full bg-neutral-300" />
             <span className="h-1 w-1 rounded-full bg-neutral-300" />
           </div>

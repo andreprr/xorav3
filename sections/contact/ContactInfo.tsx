@@ -1,212 +1,235 @@
 "use client";
 
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  MessageCircle,
-} from "lucide-react";
+import { useRef } from "react";
+import { Anton } from "next/font/google";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
-import FadeIn from "@/components/animation/FadeIn";
+// Config Font Google ANTON
+const anton = Anton({
+  weight: ["400"],
+  subsets: ["latin"],
+});
 
-const contacts = [
-  {
-    icon: Phone,
-    title: "Phone",
-    value: "+62 812-3456-7890",
-    description: "Available Mon - Fri",
-  },
-  {
-    icon: MessageCircle,
-    title: "WhatsApp",
-    value: "+62 812-3456-7890",
-    description: "Fast Response",
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    value: "hello@xora.id",
-    description: "Business Inquiry",
-  },
-  {
-    icon: MapPin,
-    title: "Location",
-    value: "Bandung, Indonesia",
-    description: "Remote Worldwide",
-  },
-];
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function ContactInfo() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const banner1Ref = useRef<HTMLDivElement>(null);
+  const contactsRowRef = useRef<HTMLDivElement>(null);
+  const banner2Ref = useRef<HTMLDivElement>(null);
+  const workingHoursRowRef = useRef<HTMLDivElement>(null);
+
+  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 78%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      // 1. Top Banner 1 Reveal
+      if (banner1Ref.current) {
+        tl.fromTo(
+          banner1Ref.current,
+          { opacity: 0, y: 35, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+        );
+      }
+
+      // 2. Contact Items Reveal
+      if (contactsRowRef.current) {
+        tl.fromTo(
+          contactsRowRef.current,
+          { opacity: 0, y: 30, filter: "blur(6px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
+
+      // 3. Middle Banner 2 Reveal
+      if (banner2Ref.current) {
+        tl.fromTo(
+          banner2Ref.current,
+          { opacity: 0, y: 35, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
+
+      // 4. Working Hours Items Reveal
+      if (workingHoursRowRef.current) {
+        tl.fromTo(
+          workingHoursRowRef.current,
+          { opacity: 0, y: 30, filter: "blur(6px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="bg-slate-50 py-32">
-
-      <div className="mx-auto max-w-7xl px-6">
-
-        <FadeIn>
-
-          <div className="mx-auto mb-20 max-w-3xl text-center">
-
-            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
-              Contact Information
-            </span>
-
-            <h2 className="mt-5 text-5xl font-black tracking-tight">
-              We're Ready
-              <br />
-              To Help Your Business
+    <section
+      ref={sectionRef}
+      id="contact-info"
+      className="
+        relative
+        w-full
+        min-h-screen
+        bg-white
+        text-slate-900
+        font-sans
+        select-none
+        overflow-hidden
+        py-12 sm:py-16 lg:py-24
+      "
+    >
+      <div className="w-full flex flex-col gap-12 sm:gap-16">
+        
+        {/* ========================================================= */}
+        {/* SECTION 1: WE'RE READY TO HELP YOUR BUSINESS              */}
+        {/* ========================================================= */}
+        <div className="w-full">
+          {/* BANNER MERAH ATAS */}
+          <div
+            ref={banner1Ref}
+            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm"
+          >
+            <h2
+              className={`
+                ${anton.className}
+                uppercase
+                tracking-tight
+                leading-none
+                text-[clamp(2.8rem,7.5vw,7.5rem)]
+                text-white
+              `}
+            >
+              WE'RE READY TO HELP YOUR BUSINESS
             </h2>
-
-            <p className="mt-6 text-lg leading-8 text-slate-500">
-              Hubungi kami melalui salah satu media berikut.
-              Kami akan merespon secepat mungkin.
-            </p>
-
           </div>
 
-        </FadeIn>
+          {/* SUB-CAPTION */}
+          <p className="text-center font-sans font-medium text-xs sm:text-sm lg:text-base text-slate-700 mt-4 sm:mt-6 px-6">
+            Hubungi kami melalui salah satu media berikut. Kami akan merespon secepat mungkin.
+          </p>
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-
-          {contacts.map((item, index) => {
-
-            const Icon = item.icon;
-
-            return (
-
-              <FadeIn
-                key={item.title}
-                delay={index * 0.15}
-              >
-
-                <div
-                  className="
-                  group
-                  rounded-3xl
-                  border
-                  border-slate-200
-                  bg-white
-                  p-8
-                  shadow-sm
-                  transition-all
-                  duration-500
-                  hover:-translate-y-2
-                  hover:shadow-2xl
-                  "
-                >
-
-                  <div
-                    className="
-                    flex
-                    h-16
-                    w-16
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-blue-100
-                    text-blue-600
-                    transition
-                    group-hover:bg-blue-600
-                    group-hover:text-white
-                    "
-                  >
-
-                    <Icon size={28} />
-
-                  </div>
-
-                  <h3 className="mt-8 text-2xl font-bold">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-3 font-semibold text-slate-900 break-words">
-                    {item.value}
-                  </p>
-
-                  <p className="mt-2 text-slate-500">
-                    {item.description}
-                  </p>
-
-                </div>
-
-              </FadeIn>
-
-            );
-
-          })}
-
-        </div>
-
-        {/* Bottom Card */}
-
-        <FadeIn delay={0.5}>
-
-          <div className="mt-16 rounded-[32px] bg-slate-900 p-10 text-white">
-
-            <div className="grid gap-8 lg:grid-cols-2">
-
-              <div>
-
-                <span className="text-sm uppercase tracking-[0.25em] text-blue-400">
-                  Working Hours
-                </span>
-
-                <h3 className="mt-4 text-3xl font-black">
-                  Always Ready for
-                  <br />
-                  New Projects
+          {/* 3 KOLOM INFO KONTAK (PHONE, EMAIL, LOCATION) */}
+          <div
+            ref={contactsRowRef}
+            className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 mt-10 sm:mt-14"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 items-start">
+              
+              {/* PHONE */}
+              <div className="flex flex-col items-start">
+                <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
+                  PHONE
                 </h3>
-
+                <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
+                  +6282130300614
+                </p>
               </div>
 
-              <div className="space-y-5">
+              {/* EMAIL */}
+              <div className="flex flex-col items-start">
+                <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
+                  EMAIL
+                </h3>
+                <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700 break-all">
+                  dickysuhardimann@gmail.com
+                </p>
+              </div>
 
-                <div className="flex items-center gap-4">
-
-                  <Clock className="text-blue-400" />
-
-                  <div>
-
-                    <h4 className="font-semibold">
-                      Monday - Friday
-                    </h4>
-
-                    <p className="text-slate-400">
-                      09.00 - 18.00 WIB
-                    </p>
-
-                  </div>
-
-                </div>
-
-                <div className="flex items-center gap-4">
-
-                  <MessageCircle className="text-blue-400" />
-
-                  <div>
-
-                    <h4 className="font-semibold">
-                      Average Response
-                    </h4>
-
-                    <p className="text-slate-400">
-                      Less than 1 Hour
-                    </p>
-
-                  </div>
-
-                </div>
-
+              {/* LOCATION */}
+              <div className="flex flex-col items-start">
+                <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
+                  LOCATION
+                </h3>
+                <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
+                  Bandung, Indonesiaa
+                </p>
               </div>
 
             </div>
+          </div>
+        </div>
+
+        {/* ========================================================= */}
+        {/* SECTION 2: WORKING HOURS                                  */}
+        {/* ========================================================= */}
+        <div className="relative w-full mt-6 sm:mt-10">
+          
+          {/* BANNER MERAH WORKING HOURS */}
+          <div
+            ref={banner2Ref}
+            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm"
+          >
+            <h2
+              className={`
+                ${anton.className}
+                uppercase
+                tracking-tight
+                leading-none
+                text-[clamp(3.2rem,8.5vw,8.5rem)]
+                text-white
+              `}
+            >
+              WORKING HOURS
+            </h2>
+          </div>
+
+          {/* SUB-CAPTION */}
+          <p className="text-center font-sans font-medium text-xs sm:text-sm lg:text-base text-slate-700 mt-4 sm:mt-6 px-6">
+            Always Ready fo New Projects
+          </p>
+
+          {/* 2 KOLOM WORKING HOURS + RIGHT SIDE RED BLOCK */}
+          <div className="relative w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 mt-10 sm:mt-14">
+            
+            <div
+              ref={workingHoursRowRef}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 items-start max-w-4xl"
+            >
+              {/* EVERYDAY */}
+              <div className="flex flex-col items-start">
+                <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
+                  EVERYDAY
+                </h3>
+                <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
+                  09.00 - 18.00 WIB
+                </p>
+              </div>
+
+              {/* AVERAGE RESPONSE */}
+              <div className="flex flex-col items-start">
+                <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
+                  AVERAGE RESPONSE
+                </h3>
+                <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
+                  Less than 1 Hour
+                </p>
+              </div>
+            </div>
+
+            {/* RIGHT SIDE VERTICAL RED ACCENT BLOCK */}
+            <div className="hidden lg:block absolute right-0 top-[-60px] bottom-[-60px] w-16 xl:w-24 bg-[#E52323]" />
 
           </div>
 
-        </FadeIn>
+        </div>
 
       </div>
-
     </section>
   );
 }

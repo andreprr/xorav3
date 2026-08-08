@@ -1,16 +1,32 @@
+"use client";
+
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import FadeIn from "@/components/animation/FadeIn";
+import { Staatliches } from "next/font/google";
+import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 import corporate from "./assets/corporate.webp";
 import dashboard from "./assets/dashboard.webp";
 
+// Import Font Staatliches untuk Title
+const staatliches = Staatliches({
+  weight: "400",
+  subsets: ["latin"],
+});
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 const projects = [
   {
     title: "Corporate Website",
-    category: "Company Profile",
+    category: "COMPANY PROFILE",
     year: "2026",
     image: corporate,
     description:
@@ -24,7 +40,7 @@ const projects = [
   },
   {
     title: "Business Dashboard",
-    category: "Business System",
+    category: "BUSINESS SYSTEM",
     year: "2026",
     image: dashboard,
     description:
@@ -39,119 +55,236 @@ const projects = [
 ];
 
 export default function FeaturedProjects() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const projectCardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
+
+      // 1. Animasi Header Entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 40, filter: "blur(8px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // 2. Animasi Setiap Item Project (Staggered Fade + Slide Up)
+      projectCardsRef.current.forEach((card) => {
+        if (!card) return;
+
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 60, filter: "blur(10px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="bg-slate-50 py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <FadeIn>
-          <div className="mb-16 max-w-3xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
-              Featured Projects
-            </span>
+    <section
+      ref={sectionRef}
+      id="featured-projects"
+      className="
+        relative
+        w-full
+        bg-white
+        text-slate-900
+        font-sans
+        select-none
+        overflow-hidden
+        py-16 sm:py-24 lg:py-28
+        px-6 sm:px-10 lg:px-16
+      "
+    >
+      <div className="mx-auto max-w-[1600px]">
+        
+        {/* ── 1. HEADER SECTION (TITLE + DESCRIPTION + SELECTED CASE STUDIES) ── */}
+        <div ref={headerRef} className="w-full mb-12 sm:mb-16">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-baseline gap-6">
+            
+            {/* KIRI: TITLE & DESKRIPSI */}
+            <div className="max-w-xl">
+              <h2
+                className={`
+                  ${staatliches.className}
+                  uppercase
+                  tracking-tight
+                  leading-[0.85]
+                  text-5xl sm:text-7xl lg:text-8xl
+                  text-slate-950
+                `}
+              >
+                FEATURE<br />PROJECTS
+              </h2>
+              <p className="mt-4 font-sans font-medium text-sm sm:text-base text-slate-700 leading-relaxed">
+                Kami membangun website dan sistem digital yang tidak hanya terlihat
+                modern, tetapi juga cepat, SEO Friendly, dan mampu meningkatkan
+                kepercayaan pelanggan.
+              </p>
+            </div>
 
-            <h2 className="mt-5 text-5xl font-black tracking-tight text-slate-900">
-              Selected Case Studies
-            </h2>
+            {/* KANAN: LABEL MICRO "SELECTED CASE STUDIES" */}
+            <div className="lg:text-right">
+              <span className="font-sans font-extrabold text-sm sm:text-base lg:text-xl uppercase tracking-wider text-slate-800">
+                SELECTED CASE STUDIES
+              </span>
+            </div>
 
-            <p className="mt-6 text-lg leading-8 text-slate-600">
-              Kami membangun website dan sistem digital yang tidak hanya
-              terlihat modern, tetapi juga cepat, SEO Friendly, dan mampu
-              meningkatkan kepercayaan pelanggan.
-            </p>
           </div>
-        </FadeIn>
 
-        <div className="space-y-12">
+          {/* Garis Pembatas Tipis */}
+          <div className="w-full h-[1px] bg-slate-300 mt-6 sm:mt-8" />
+        </div>
+
+        {/* ── 2. PROJECT LIST SHOWCASE ── */}
+        <div className="space-y-16 sm:space-y-24">
           {projects.map((project, index) => (
-            <FadeIn key={project.title} delay={index * 0.15}>
-              <div className="group relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_35px_80px_rgba(0,0,0,.12)]">
-                {/* Background Glow */}
-                <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-
-                <div
-                  className={`grid items-center gap-10 lg:grid-cols-2 ${index % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
-                    }`}
-                >
-                  {/* Preview */}
-                  <div className="relative p-8 lg:p-10">
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-2xl">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        priority={index === 0}
-                        sizes="(max-width:768px) 100vw, 50vw"
-                        className="object-cover transition duration-700 group-hover:scale-105"
-                      />
-                    </div>
+            <div
+              key={project.title}
+              ref={(el) => {
+                projectCardsRef.current[index] = el;
+              }}
+              className="w-full border-b border-slate-200/80 pb-12 sm:pb-16 last:border-b-0"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+                
+                {/* KOLOM KIRI: PREVIEW MOCKUP GAMBAR + LABEL CATEGORY */}
+                <div className="lg:col-span-7 flex flex-col items-start">
+                  <div className="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-slate-950 border border-slate-200 shadow-md group">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      priority={index === 0}
+                      sizes="(max-width: 1024px) 100vw, 55vw"
+                      className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
                   </div>
 
-                  {/* Content */}
-                  <div className="relative p-8 lg:p-12">
-                    <div className="flex items-center justify-between">
-                      <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
-                        {project.category}
-                      </span>
+                  {/* Category Label di Bawah Gambar */}
+                  <span className="mt-4 font-sans font-bold text-xs sm:text-sm uppercase tracking-widest text-slate-600">
+                    {project.category}
+                  </span>
+                </div>
 
-                      <span className="text-sm font-medium text-slate-500">
-                        {project.year}
-                      </span>
-                    </div>
-
-                    <h3 className="mt-8 text-4xl font-black tracking-tight text-slate-900">
+                {/* KOLOM KANAN: PROJECT DETAILS */}
+                <div className="lg:col-span-5 flex flex-col justify-between h-full pt-2 lg:pt-0">
+                  <div>
+                    {/* Title Project */}
+                    <h3 className="font-sans font-black text-2xl sm:text-4xl lg:text-5xl text-slate-950 uppercase tracking-tight">
                       {project.title}
                     </h3>
 
-                    <p className="mt-6 text-lg leading-8 text-slate-600">
+                    {/* Deskripsi */}
+                    <p className="mt-4 sm:mt-6 font-sans font-normal text-sm sm:text-base lg:text-lg text-slate-700 leading-relaxed">
                       {project.description}
                     </p>
 
-                    {/* Stats */}
-                    <div className="mt-10 grid grid-cols-3 gap-6">
-                      {project.stats.map((item) => (
-                        <div key={item.label}>
-                          <h4 className="text-3xl font-black text-blue-600">
-                            {item.value}
-                          </h4>
+                    {/* STATS & TECH STACK GRID */}
+                    <div className="mt-8 sm:mt-10 grid grid-cols-2 gap-6 items-start">
+                      
+                      {/* STATS LIST (KIRI) */}
+                      <div className="space-y-5">
+                        {project.stats.map((stat) => (
+                          <div key={stat.label}>
+                            <h4 className="font-sans font-black text-2xl sm:text-3xl text-slate-950 leading-none">
+                              {stat.value}
+                            </h4>
+                            <p className="font-sans font-medium text-xs sm:text-sm text-slate-600 mt-1">
+                              {stat.label}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
 
-                          <p className="mt-2 text-sm text-slate-500">
-                            {item.label}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                      {/* TECH STACK CHIPS (KANAN) */}
+                      <div className="flex flex-col items-start gap-2.5">
+                        {project.tech.map((techItem) => (
+                          <span
+                            key={techItem}
+                            className="
+                              px-5
+                              py-1.5
+                              rounded-full
+                              bg-slate-700
+                              text-white
+                              font-sans
+                              font-semibold
+                              text-xs sm:text-sm
+                              tracking-tight
+                              shadow-sm
+                            "
+                          >
+                            {techItem}
+                          </span>
+                        ))}
+                      </div>
 
-                    {/* Tech */}
-                    <div className="mt-10 flex flex-wrap gap-3">
-                      {project.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <div className="mt-10 flex flex-wrap gap-4">
-                      <Button size="lg">
-                        Live Preview
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </Button>
-
-                      <Link href="/contact">
-                        <Button variant="ghost" size="lg">
-                          Start Similar Project
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </Link>
                     </div>
                   </div>
+
+                  {/* CTA BUTTONS (BOTTOM) */}
+                  <div className="mt-10 sm:mt-12 flex items-center justify-between gap-4 pt-6 border-t border-slate-200">
+                    {/* Live Preview Button */}
+                    <motion.a
+                      href="#preview"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center gap-2 font-sans font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-950 hover:text-[#E52323] transition-colors"
+                    >
+                      <span>Live Preview</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </motion.a>
+
+                    {/* Start Similar Project Link */}
+                    <Link href="/contact">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="inline-flex items-center gap-2 font-sans font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-950 hover:text-[#E52323] transition-colors"
+                      >
+                        <span>Start Similar Project</span>
+                        <ArrowRight className="h-4 w-4" />
+                      </motion.div>
+                    </Link>
+                  </div>
+
                 </div>
+
               </div>
-            </FadeIn>
+            </div>
           ))}
         </div>
+
       </div>
     </section>
   );

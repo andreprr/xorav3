@@ -1,167 +1,211 @@
-import Image from "next/image";
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 import { projects } from "./projectData";
 
-import {
-  StaggerContainer,
-  StaggerItem,
-} from "@/components/animation/Stagger";
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function ProjectGrid() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
+
+      // 1. Header Entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 35, filter: "blur(8px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // 2. Row Items Staggered Entrance
+      rowsRef.current.forEach((row) => {
+        if (!row) return;
+
+        gsap.fromTo(
+          row,
+          { opacity: 0, y: 40, filter: "blur(6px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.7,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="bg-slate-50 py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        {/* Header */}
-        <div className="mb-16 max-w-3xl">
-          <span className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
-            Featured Works
-          </span>
+    <section
+      ref={sectionRef}
+      id="project-grid"
+      className="
+        relative
+        w-full
+        bg-white
+        text-slate-900
+        font-sans
+        select-none
+        overflow-hidden
+        py-16 sm:py-24 lg:py-28
+        px-6 sm:px-10 lg:px-16
+      "
+    >
+      <div className="mx-auto max-w-[1600px]">
+        
+        {/* ── 1. HEADER SECTION (TITLE + DESKRIPSI + DIVIDER) ── */}
+        <div ref={headerRef} className="w-full mb-8 sm:mb-12">
+          <div className="max-w-xl">
+            <h2 className="font-sans font-extrabold text-3xl sm:text-5xl lg:text-6xl text-slate-950 tracking-tight leading-tight">
+              Project yang kami bangun
+            </h2>
+            <p className="mt-3 font-sans font-medium text-sm sm:text-base text-slate-700 leading-relaxed">
+              Website modern dengan desain premium, performa cepat, dan
+              pengalaman pengguna yang profesional.
+            </p>
+          </div>
 
-          <h2 className="mt-5 text-4xl font-black tracking-tight md:text-6xl">
-            Project yang kami bangun
-          </h2>
-
-          <p className="mt-6 text-lg leading-8 text-slate-500">
-            Website modern dengan desain premium, performa cepat, dan
-            pengalaman pengguna yang profesional.
-          </p>
+          {/* Garis Pembatas Tipis */}
+          <div className="w-full h-[1.5px] bg-slate-900 mt-6 sm:mt-8" />
         </div>
 
-        {/* Grid */}
-        <StaggerContainer>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <StaggerItem key={project.title}>
+        {/* ── 2. ALTERNATING ZIG-ZAG LIST ROWS (TANPA GAMBAR) ── */}
+        <div className="flex flex-col w-full">
+          {projects.map((project, index) => {
+            const isEven = index % 2 === 0;
+
+            return (
+              <div
+                key={project.title || index}
+                ref={(el) => {
+                  rowsRef.current[index] = el;
+                }}
+                className="w-full border-b border-slate-900"
+              >
                 <Link
                   href="/contact"
                   className="
                     group
                     relative
-                    block
-                    overflow-hidden
-                    rounded-[28px]
-                    border
-                    border-slate-200
-                    bg-white
-                    shadow-sm
-                    transition-all
-                    duration-500
-                    hover:-translate-y-3
-                    hover:border-blue-300
-                    hover:shadow-[0_30px_80px_rgba(37,99,235,0.18)]
+                    w-full
+                    py-5 sm:py-7 lg:py-8
+                    px-2 sm:px-4
+                    flex
+                    items-center
+                    justify-between
+                    transition-colors
+                    duration-300
+                    hover:bg-slate-50/80
                   "
                 >
-                  {/* Image */}
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      priority={project.title === "Corporate Website"}
-                      sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 33vw"
-                      className="
-                        object-cover
-                        transition-all
-                        duration-700
-                        ease-out
-                        group-hover:scale-110
-                      "
-                    />
-
-                    {/* Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-                    {/* Shine Effect */}
-                    <div
-                      className="
-                        absolute
-                        inset-0
-                        -translate-x-full
-                        bg-gradient-to-r
-                        from-transparent
-                        via-white/20
-                        to-transparent
-                        transition-transform
-                        duration-1000
-                        group-hover:translate-x-full
-                      "
-                    />
-
-                    {/* Category */}
-                    <div
-                      className="
-                        absolute
-                        left-5
-                        top-5
-                        rounded-full
-                        bg-white/90
-                        px-4
-                        py-2
-                        text-xs
-                        font-semibold
-                        text-slate-800
-                        backdrop-blur-md
-                      "
-                    >
-                      {project.category}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex items-center justify-between p-6">
-                    <div>
-                      <h3
+                  {/* ALTERNATING PATTERN (LEFT vs RIGHT) */}
+                  {isEven ? (
+                    <>
+                      {/* KIRI: TITLE PROJECT */}
+                      <motion.h3
+                        whileHover={{ x: 6 }}
+                        transition={{ duration: 0.2 }}
                         className="
-                          text-xl
-                          font-bold
+                          font-sans
+                          font-black
+                          uppercase
                           tracking-tight
+                          text-2xl sm:text-4xl lg:text-5xl
+                          text-slate-950
+                          group-hover:text-[#E52323]
                           transition-colors
                           duration-300
-                          group-hover:text-blue-600
                         "
                       >
                         {project.title}
-                      </h3>
+                      </motion.h3>
 
-                      <p className="mt-2 text-sm text-slate-500">
-                        View Project
-                      </p>
-                    </div>
-
-                    <div
-                      className="
-                        flex
-                        size-11
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-slate-200
-                        bg-slate-50
-                        transition-all
-                        duration-300
-                        group-hover:scale-110
-                        group-hover:bg-blue-600
-                        group-hover:text-white
-                      "
-                    >
-                      <ArrowUpRight
-                        className="
-                          size-5
-                          transition-transform
+                      {/* KANAN: VIEW PROJECT BUTTON */}
+                      <span
+                        className={`
+                          font-sans
+                          font-extrabold
+                          text-base sm:text-xl lg:text-2xl
+                          tracking-tight
+                          transition-colors
                           duration-300
-                          group-hover:rotate-45
+                          ${
+                            index === 0
+                              ? "text-[#E52323]"
+                              : "text-slate-950 group-hover:text-[#E52323]"
+                          }
+                        `}
+                      >
+                        View Project
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {/* KIRI: VIEW PROJECT BUTTON */}
+                      <span className="font-sans font-extrabold text-base sm:text-xl lg:text-2xl tracking-tight text-slate-950 group-hover:text-[#E52323] transition-colors duration-300">
+                        View Project
+                      </span>
+
+                      {/* KANAN: TITLE PROJECT */}
+                      <motion.h3
+                        whileHover={{ x: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="
+                          font-sans
+                          font-black
+                          uppercase
+                          tracking-tight
+                          text-2xl sm:text-4xl lg:text-5xl
+                          text-slate-950
+                          group-hover:text-[#E52323]
+                          transition-colors
+                          duration-300
+                          text-right
                         "
-                      />
-                    </div>
-                  </div>
+                      >
+                        {project.title}
+                      </motion.h3>
+                    </>
+                  )}
                 </Link>
-              </StaggerItem>
-            ))}
-          </div>
-        </StaggerContainer>
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );

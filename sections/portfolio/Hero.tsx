@@ -1,149 +1,99 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+"use client";
 
-import corporate from "./assets/corporate.webp";
+import Image from "next/image";
+// Import asset gambar xora services
+import xoraServicesImg from "@/sections/portfolio/assets/xora services.webp";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white">
-      {/* Background Blur */}
-      <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-blue-500/10 blur-3xl" />
-      <div className="absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
+    <section
+      className="
+        relative
+        w-full
+        min-h-screen
+        bg-slate-950
+        text-white
+        font-sans
+        select-none
+        overflow-hidden
+        flex
+        flex-col
+        justify-center
+        px-6 sm:px-12 lg:px-20
+        py-16 sm:py-24
+      "
+    >
+      {/* ── BACKGROUND IMAGE SHOWCASE DENGAN OVERLAY ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Image
+          src={xoraServicesImg}
+          alt="XORA Services Background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Gradient Overlay untuk Menjaga Contras & Readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+      </div>
 
-      <div className="relative mx-auto flex min-h-[90vh] max-w-7xl items-center justify-between gap-20 px-6 py-24">
-        {/* LEFT */}
-        <div className="max-w-2xl">
-          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-600">
+      {/* ── MAIN CONTENT CONTAINER ── */}
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto flex flex-col justify-center">
+        
+        {/* ── 1. GIANT TYPOGRAPHY "Portfolio" WITH GOLD GRADIENT ── */}
+        <div className="w-full">
+          <h1
+            className="
+              font-sans
+              font-black
+              tracking-[-0.05em]
+              leading-none
+              text-[clamp(4.8rem,16vw,14.5rem)]
+              bg-gradient-to-r
+              from-white
+              via-[#EAB308]
+              to-[#D08E12]
+              bg-clip-text
+              text-transparent
+              select-none
+              drop-shadow-lg
+            "
+          >
             Portfolio
-          </span>
-
-          <h1 className="mt-8 text-6xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-7xl">
-            Selected
-            <br />
-            Works That
-            <br />
-            Build Trust.
           </h1>
+        </div>
 
-          <p className="mt-8 max-w-xl text-lg leading-8 text-slate-600">
+        {/* ── 2. STATS SECTION (20+ Project & 100% Custom Built) ── */}
+        <div className="mt-8 sm:mt-12 lg:mt-14 flex items-center gap-10 sm:gap-16">
+          {/* Stat 1 */}
+          <div>
+            <h2 className="font-sans font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
+              20+
+            </h2>
+            <p className="mt-1 font-sans font-bold text-sm sm:text-base text-slate-300">
+              Project
+            </p>
+          </div>
+
+          {/* Stat 2 */}
+          <div>
+            <h2 className="font-sans font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
+              100%
+            </h2>
+            <p className="mt-1 font-sans font-bold text-sm sm:text-base text-slate-300">
+              Custom Built
+            </p>
+          </div>
+        </div>
+
+        {/* ── 3. DESCRIPTION PARAGRAPH ── */}
+        <div className="mt-8 sm:mt-10 max-w-xl">
+          <p className="font-sans font-medium text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed">
             Kami membantu bisnis membangun website dan sistem digital yang
             modern, cepat, scalable, dan berorientasi pada pertumbuhan bisnis.
           </p>
-
-          <div className="mt-10 flex gap-4">
-            <Button size="lg">
-              Explore Portfolio
-            </Button>
-
-            <Link href="/contact">
-              <Button variant="outline" size="lg">
-                Start Project
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-
-          <div className="mt-16 flex gap-12">
-            <div>
-              <h3 className="text-3xl font-bold">20+</h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Projects
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-3xl font-bold">10+</h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Industries
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-3xl font-bold">100%</h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Custom Built
-              </p>
-            </div>
-          </div>
         </div>
 
-        {/* RIGHT */}
-        <div className="relative flex-1">
-          <div className="group rounded-[32px] border border-slate-200 bg-white p-5 shadow-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(37,99,235,0.18)]">
-            {/* Image */}
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image
-                src={corporate}
-                alt="Corporate Website"
-                fill
-                priority
-                sizes="(max-width:768px) 100vw, 50vw"
-                className="object-cover transition-all duration-700 group-hover:scale-105"
-              />
-
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-              {/* Shine Effect */}
-              <div
-                className="
-                  absolute
-                  inset-0
-                  -translate-x-full
-                  bg-gradient-to-r
-                  from-transparent
-                  via-white/20
-                  to-transparent
-                  transition-transform
-                  duration-1000
-                  group-hover:translate-x-full
-                "
-              />
-            </div>
-
-            {/* Content */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs uppercase tracking-widest text-blue-600">
-                    Featured Project
-                  </span>
-
-                  <h3 className="mt-2 text-2xl font-bold">
-                    Corporate Website
-                  </h3>
-                </div>
-
-                <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-700">
-                  Completed
-                </span>
-              </div>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                Modern corporate website built using Next.js, Tailwind CSS,
-                responsive layout, and optimized for SEO.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                {[
-                  "Next.js",
-                  "TypeScript",
-                  "Tailwind CSS",
-                  "SEO",
-                ].map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
