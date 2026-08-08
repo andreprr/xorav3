@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Anton } from "next/font/google";
+import { motion, Variants } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,14 +17,36 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Custom Cubic Bezier Easing
+const customEase = [0.16, 1, 0.3, 1] as const;
+
+// 1. Stagger Container untuk Grid Info Kontak / Working Hours
+const contactGrid: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+// 2. Card Info Kontak — Blur-To-Clear Fade Up
+const contactCard: Variants = {
+  hidden: { opacity: 0, y: 26, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: customEase },
+  },
+};
+
 export default function ContactInfo() {
   const sectionRef = useRef<HTMLElement>(null);
   const banner1Ref = useRef<HTMLDivElement>(null);
-  const contactsRowRef = useRef<HTMLDivElement>(null);
   const banner2Ref = useRef<HTMLDivElement>(null);
-  const workingHoursRowRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER: Banners Reveal (Blur-to-Clear Merge) ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
@@ -40,38 +63,18 @@ export default function ContactInfo() {
       if (banner1Ref.current) {
         tl.fromTo(
           banner1Ref.current,
-          { opacity: 0, y: 35, filter: "blur(10px)" },
+          { opacity: 0, y: 35, filter: "blur(12px)" },
           { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
         );
       }
 
-      // 2. Contact Items Reveal
-      if (contactsRowRef.current) {
-        tl.fromTo(
-          contactsRowRef.current,
-          { opacity: 0, y: 30, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power3.out" },
-          "-=0.4"
-        );
-      }
-
-      // 3. Middle Banner 2 Reveal
+      // 2. Middle Banner 2 Reveal
       if (banner2Ref.current) {
         tl.fromTo(
           banner2Ref.current,
-          { opacity: 0, y: 35, filter: "blur(10px)" },
+          { opacity: 0, y: 35, filter: "blur(12px)" },
           { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
-          "-=0.4"
-        );
-      }
-
-      // 4. Working Hours Items Reveal
-      if (workingHoursRowRef.current) {
-        tl.fromTo(
-          workingHoursRowRef.current,
-          { opacity: 0, y: 30, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power3.out" },
-          "-=0.4"
+          "-=0.5"
         );
       }
     },
@@ -103,7 +106,7 @@ export default function ContactInfo() {
           {/* BANNER MERAH ATAS */}
           <div
             ref={banner1Ref}
-            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm"
+            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm will-change-transform"
           >
             <h2
               className={`
@@ -124,44 +127,59 @@ export default function ContactInfo() {
             Hubungi kami melalui salah satu media berikut. Kami akan merespon secepat mungkin.
           </p>
 
-          {/* 3 KOLOM INFO KONTAK (PHONE, EMAIL, LOCATION) */}
-          <div
-            ref={contactsRowRef}
-            className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 mt-10 sm:mt-14"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 items-start">
+          {/* 3 KOLOM INFO KONTAK (PHONE, EMAIL, LOCATION) — Staggered Fade */}
+          <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 mt-10 sm:mt-14">
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 items-start"
+              variants={contactGrid}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
+            >
               
               {/* PHONE */}
-              <div className="flex flex-col items-start">
+              <motion.div
+                variants={contactCard}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                className="flex flex-col items-start will-change-transform"
+              >
                 <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
                   PHONE
                 </h3>
                 <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
                   +6282130300614
                 </p>
-              </div>
+              </motion.div>
 
               {/* EMAIL */}
-              <div className="flex flex-col items-start">
+              <motion.div
+                variants={contactCard}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                className="flex flex-col items-start will-change-transform"
+              >
                 <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
                   EMAIL
                 </h3>
                 <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700 break-all">
                   dickysuhardimann@gmail.com
                 </p>
-              </div>
+              </motion.div>
 
               {/* LOCATION */}
-              <div className="flex flex-col items-start">
+              <motion.div
+                variants={contactCard}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                className="flex flex-col items-start will-change-transform"
+              >
                 <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
                   LOCATION
                 </h3>
                 <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
                   Bandung, Indonesiaa
                 </p>
-              </div>
+              </motion.div>
 
-            </div>
+            </motion.div>
           </div>
         </div>
 
@@ -173,7 +191,7 @@ export default function ContactInfo() {
           {/* BANNER MERAH WORKING HOURS */}
           <div
             ref={banner2Ref}
-            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm"
+            className="w-full bg-[#E52323] py-8 sm:py-12 lg:py-14 px-6 text-center shadow-sm will-change-transform"
           >
             <h2
               className={`
@@ -194,33 +212,44 @@ export default function ContactInfo() {
             Always Ready fo New Projects
           </p>
 
-          {/* 2 KOLOM WORKING HOURS + RIGHT SIDE RED BLOCK */}
+          {/* 2 KOLOM WORKING HOURS + RIGHT SIDE RED BLOCK — Staggered Fade */}
           <div className="relative w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 mt-10 sm:mt-14">
             
-            <div
-              ref={workingHoursRowRef}
+            <motion.div
               className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 items-start max-w-4xl"
+              variants={contactGrid}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
             >
               {/* EVERYDAY */}
-              <div className="flex flex-col items-start">
+              <motion.div
+                variants={contactCard}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                className="flex flex-col items-start will-change-transform"
+              >
                 <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
                   EVERYDAY
                 </h3>
                 <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
                   09.00 - 18.00 WIB
                 </p>
-              </div>
+              </motion.div>
 
               {/* AVERAGE RESPONSE */}
-              <div className="flex flex-col items-start">
+              <motion.div
+                variants={contactCard}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                className="flex flex-col items-start will-change-transform"
+              >
                 <h3 className="font-sans font-black text-2xl sm:text-4xl uppercase tracking-tight text-slate-950">
                   AVERAGE RESPONSE
                 </h3>
                 <p className="mt-2 font-sans font-medium text-sm sm:text-base text-slate-700">
                   Less than 1 Hour
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* RIGHT SIDE VERTICAL RED ACCENT BLOCK */}
             <div className="hidden lg:block absolute right-0 top-[-60px] bottom-[-60px] w-16 xl:w-24 bg-[#E52323]" />

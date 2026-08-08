@@ -43,25 +43,30 @@ export default function ProjectGrid() {
         );
       }
 
-      // 2. Row Items Staggered Entrance
-      rowsRef.current.forEach((row) => {
+      // 2. Zig-Zag Staggered Reveal (once-played saat masuk viewport)
+      const rowTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      rowsRef.current.forEach((row, index) => {
         if (!row) return;
 
-        gsap.fromTo(
+        const isEven = index % 2 === 0;
+        rowTl.fromTo(
           row,
-          { opacity: 0, y: 40, filter: "blur(6px)" },
+          { opacity: 0, x: isEven ? -72 : 72, filter: "blur(8px)" },
           {
             opacity: 1,
-            y: 0,
+            x: 0,
             filter: "blur(0px)",
             duration: 0.7,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: row,
-              start: "top 88%",
-              toggleActions: "play none none reverse",
-            },
-          }
+          },
+          index * 0.1
         );
       });
     },
@@ -126,9 +131,12 @@ export default function ProjectGrid() {
                     flex
                     items-center
                     justify-between
-                    transition-colors
-                    duration-300
+                    transition-[transform,background-color,color]
+                    duration-500
+                    hover:translate-x-2
                     hover:bg-slate-50/80
+                    active:scale-[0.99]
+                    will-change-transform
                   "
                 >
                   {/* ALTERNATING PATTERN (LEFT vs RIGHT) */}
@@ -137,6 +145,7 @@ export default function ProjectGrid() {
                       {/* KIRI: TITLE PROJECT */}
                       <motion.h3
                         whileHover={{ x: 6 }}
+                        whileTap={{ scale: 0.98 }}
                         transition={{ duration: 0.2 }}
                         className="
                           font-sans
@@ -182,6 +191,7 @@ export default function ProjectGrid() {
                       {/* KANAN: TITLE PROJECT */}
                       <motion.h3
                         whileHover={{ x: -6 }}
+                        whileTap={{ scale: 0.98 }}
                         transition={{ duration: 0.2 }}
                         className="
                           font-sans

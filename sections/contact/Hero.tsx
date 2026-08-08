@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { Anton } from "next/font/google";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -18,14 +18,36 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Custom Cubic Bezier Easing
+const customEase = [0.16, 1, 0.3, 1] as const;
+
+// 1. Sidebar Vertical Text Stagger Container
+const sidebarContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.35,
+    },
+  },
+};
+
+// 2. Sidebar Vertical Text Item
+const sidebarItem: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: customEase },
+  },
+};
+
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const xoraOverlayRef = useRef<HTMLDivElement>(null);
   const yearRef = useRef<HTMLDivElement>(null);
   const bottomMetaRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER ANIMATION (Metadata: Year + Bottom CTA) ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
@@ -47,33 +69,13 @@ export default function Hero() {
         );
       }
 
-      // 2. Giant "CONTACT" Title Entrance
-      if (titleRef.current) {
-        tl.fromTo(
-          titleRef.current,
-          { opacity: 0, scale: 0.92, filter: "blur(12px)" },
-          { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1, ease: "power3.out" },
-          "-=0.4"
-        );
-      }
-
-      // 3. "Xora" Amsterdam Script Overlay Entrance
-      if (xoraOverlayRef.current) {
-        tl.fromTo(
-          xoraOverlayRef.current,
-          { opacity: 0, scale: 0.7, rotate: -5 },
-          { opacity: 1, scale: 1, rotate: 0, duration: 0.9, ease: "back.out(1.5)" },
-          "-=0.6"
-        );
-      }
-
-      // 4. Bottom Metadata & Whatsapp Link Reveal
+      // 2. Bottom Metadata & Whatsapp Link Reveal
       if (bottomMetaRef.current) {
         tl.fromTo(
           bottomMetaRef.current,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-          "-=0.5"
+          "-=0.4"
         );
       }
     },
@@ -116,23 +118,72 @@ export default function Hero() {
       {/* ── 2. MAIN CENTER TYPOGRAPHY SECTION ("CONTACT" + OVERLAY "Xora") ── */}
       <div className="relative my-auto w-full flex items-center justify-center py-8">
         
-        {/* SIDEBAR VERTICAL TEXT LEFT */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-24 font-mono text-[11px] uppercase tracking-widest text-[#FFFBEB]/40 -rotate-90 origin-left">
-          <span>DIGITAL</span>
-          <span>BORCELLE</span>
-        </div>
+        {/* SIDEBAR VERTICAL TEXT LEFT (Staggered Fade) */}
+        <motion.div
+          variants={sidebarContainer}
+          initial="hidden"
+          animate="visible"
+          className="
+            absolute
+            left-0
+            top-1/2
+            -translate-y-1/2
+            hidden
+            lg:flex
+            flex-col
+            gap-24
+            font-mono
+            text-[11px]
+            uppercase
+            tracking-widest
+            text-[#FFFBEB]/40
+            -rotate-90
+            origin-left
+            will-change-transform
+          "
+        >
+          <motion.span variants={sidebarItem}>DIGITAL</motion.span>
+          <motion.span variants={sidebarItem}>BORCELLE</motion.span>
+        </motion.div>
 
-        {/* SIDEBAR VERTICAL TEXT RIGHT */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-24 font-mono text-[11px] uppercase tracking-widest text-[#FFFBEB]/40 rotate-90 origin-right">
-          <span>DIGITAL</span>
-          <span>BORCELLE</span>
-        </div>
+        {/* SIDEBAR VERTICAL TEXT RIGHT (Staggered Fade) */}
+        <motion.div
+          variants={sidebarContainer}
+          initial="hidden"
+          animate="visible"
+          className="
+            absolute
+            right-0
+            top-1/2
+            -translate-y-1/2
+            hidden
+            lg:flex
+            flex-col
+            gap-24
+            font-mono
+            text-[11px]
+            uppercase
+            tracking-widest
+            text-[#FFFBEB]/40
+            rotate-90
+            origin-right
+            will-change-transform
+          "
+        >
+          <motion.span variants={sidebarItem}>DIGITAL</motion.span>
+          <motion.span variants={sidebarItem}>BORCELLE</motion.span>
+        </motion.div>
 
         {/* CENTER CONTENT CONTAINER */}
         <div className="relative text-center w-full max-w-[1650px] flex items-center justify-center">
           
-          {/* GIANT "CONTACT" TITLE USING ANTON FONT */}
-          <div ref={titleRef} className="w-full">
+          {/* GIANT "CONTACT" TITLE MENGGUNAKAN ANTON FONT (Elastic Spring Scale-In) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 11, mass: 0.9 }}
+            className="w-full will-change-transform"
+          >
             <h1
               className={`
                 ${anton.className}
@@ -147,11 +198,13 @@ export default function Hero() {
             >
               CONTACT
             </h1>
-          </div>
+          </motion.div>
 
-          {/* OVERLAY "Xora" CURSIVE HANDWRITING SCRIPT (AMSTERDAM FOUR STYLE) */}
-          <div
-            ref={xoraOverlayRef}
+          {/* OVERLAY "Xora" CURSIVE HANDWRITING SCRIPT (AMSTERDAM FOUR STYLE) — Rotate-In Entrance */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6, rotate: -10 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.9, delay: 0.45, ease: customEase }}
             className="
               absolute
               top-1/2
@@ -160,6 +213,7 @@ export default function Hero() {
               -translate-y-[55%]
               z-20
               pointer-events-none
+              will-change-transform
             "
           >
             <span
@@ -181,7 +235,7 @@ export default function Hero() {
             >
               Xora
             </span>
-          </div>
+          </motion.div>
 
         </div>
       </div>
@@ -206,6 +260,7 @@ export default function Hero() {
             <motion.span
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 350, damping: 18 }}
               className={`
                 ${anton.className}
                 inline-block
@@ -217,6 +272,7 @@ export default function Hero() {
                 transition-colors
                 duration-300
                 cursor-pointer
+                will-change-transform
               `}
             >
               WHATSAPP

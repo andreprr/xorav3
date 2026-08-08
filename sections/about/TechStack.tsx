@@ -42,7 +42,7 @@ export default function TechStack() {
   const rightColRef = useRef<HTMLDivElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER FAST ON-POINT STAGGERED ENTRANCE ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
@@ -50,63 +50,51 @@ export default function TechStack() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 78%",
+          start: "top 85%",
           toggleActions: "play none none reverse",
         },
+        defaults: { ease: "power3.out", duration: 0.7 },
       });
 
       // 1. Header Entrance
       if (headerRef.current) {
         tl.fromTo(
           headerRef.current,
-          { opacity: 0, y: 40, filter: "blur(10px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+          { opacity: 0, y: 36, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)" },
+          0
         );
       }
 
-      // 2. Center Double Line Divider Scale Up
+      // 2. Center double-line quick draw (scaleY 0 -> 1, origin top)
       if (dividerRef.current) {
         tl.fromTo(
           dividerRef.current,
           { scaleY: 0 },
-          { scaleY: 1, duration: 0.8, ease: "power3.inOut" },
-          "-=0.5"
+          { scaleY: 1, duration: 0.7, ease: "power3.inOut" },
+          0.15
         );
       }
 
-      // 3. Left Column Tech Items Staggered Reveal
+      // 3. Left Column — counter-slide dari kiri, staggered
       if (leftColRef.current) {
         const leftItems = leftColRef.current.querySelectorAll(".tech-item");
         tl.fromTo(
           leftItems,
-          { opacity: 0, x: -30, filter: "blur(6px)" },
-          {
-            opacity: 1,
-            x: 0,
-            filter: "blur(0px)",
-            duration: 0.5,
-            stagger: 0.08,
-            ease: "power3.out",
-          },
-          "-=0.6"
+          { opacity: 0, x: -70 },
+          { opacity: 1, x: 0, stagger: 0.1 },
+          0.2
         );
       }
 
-      // 4. Right Column Tech Items Staggered Reveal
+      // 4. Right Column — counter-slide dari kanan, staggered
       if (rightColRef.current) {
         const rightItems = rightColRef.current.querySelectorAll(".tech-item");
         tl.fromTo(
           rightItems,
-          { opacity: 0, x: 30, filter: "blur(6px)" },
-          {
-            opacity: 1,
-            x: 0,
-            filter: "blur(0px)",
-            duration: 0.5,
-            stagger: 0.08,
-            ease: "power3.out",
-          },
-          "-=0.6"
+          { opacity: 0, x: 70 },
+          { opacity: 1, x: 0, stagger: 0.1 },
+          0.25
         );
       }
     },
@@ -174,6 +162,8 @@ export default function TechStack() {
               items-center
               justify-center
               origin-top
+              will-change-transform
+              pointer-events-none
             "
           >
             <div className="w-[1px] h-full bg-white/30" />
@@ -197,6 +187,7 @@ export default function TechStack() {
                   transition-colors
                   duration-300
                   cursor-pointer
+                  will-change-transform
                 `}
               >
                 {item}
@@ -222,6 +213,7 @@ export default function TechStack() {
                   duration-300
                   cursor-pointer
                   text-right
+                  will-change-transform
                 `}
               >
                 {item}

@@ -18,7 +18,7 @@ export default function Hero() {
   const paragraphsRef = useRef<HTMLDivElement>(null);
   const footerLabelRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP PREMIUM ENTRANCE ANIMATION ──
+  // ── GSAP CINEMATIC ENTRANCE (LONG BLUR-TO-CLEAR, WORD STAGGER) ──
   useGSAP(
     () => {
       if (!containerRef.current) return;
@@ -27,12 +27,20 @@ export default function Hero() {
         defaults: { ease: "power4.out" },
       });
 
-      // 1. Title Entrance (Scale Up + Slide Up + Blur Fade)
+      // 1. Title — each word staggers in with slow blur-to-clear reveal
       if (titleRef.current) {
+        const words = titleRef.current.querySelectorAll(".hero-word");
         tl.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 70, filter: "blur(12px)", scale: 0.95 },
-          { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 1.4 }
+          words,
+          { opacity: 0, y: 90, scale: 0.94, filter: "blur(16px)" },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 1.8,
+            stagger: 0.25,
+          }
         );
       }
 
@@ -40,36 +48,36 @@ export default function Hero() {
       if (badgeRef.current) {
         tl.fromTo(
           badgeRef.current,
-          { opacity: 0, x: 20 },
-          { opacity: 1, x: 0, duration: 1 },
-          "-=1.1"
+          { opacity: 0, x: 24 },
+          { opacity: 1, x: 0, duration: 1.2 },
+          "-=1.4"
         );
       }
 
-      // 3. Paragraphs Entrance Staggered
+      // 3. Paragraphs Entrance — staggered soft blur
       if (paragraphsRef.current) {
         const paragraphEls = paragraphsRef.current.querySelectorAll("p");
         tl.fromTo(
           paragraphEls,
-          { opacity: 0, y: 40, filter: "blur(8px)" },
+          { opacity: 0, y: 40, filter: "blur(10px)" },
           {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            duration: 1.1,
-            stagger: 0.2,
+            duration: 1.3,
+            stagger: 0.25,
           },
-          "-=0.9"
+          "-=1.2"
         );
       }
 
-      // 4. Footer Label Entrance
+      // 4. Footer Label — fade in from bottom, delayed
       if (footerLabelRef.current) {
         tl.fromTo(
           footerLabelRef.current,
-          { opacity: 0 },
-          { opacity: 0.8, duration: 1 },
-          "-=0.6"
+          { opacity: 0, y: 40 },
+          { opacity: 0.8, y: 0, duration: 1.2 },
+          "-=0.7"
         );
       }
     },
@@ -110,7 +118,8 @@ export default function Hero() {
             text-[#ECEBE6]
           `}
         >
-          XORA STUDIO
+          <span className="hero-word inline-block will-change-transform">XORA</span>{" "}
+          <span className="hero-word inline-block will-change-transform">STUDIO</span>
         </h1>
 
         {/* MICRO LABEL "ABOUT XORA" */}
@@ -125,6 +134,7 @@ export default function Hero() {
             text-[#ECEBE6]/90
             pt-2 sm:pt-4
             shrink-0
+            will-change-transform
           "
         >
           ABOUT XORA
@@ -139,20 +149,20 @@ export default function Hero() {
           className="max-w-4xl space-y-6 sm:space-y-8 font-sans font-normal text-base sm:text-xl lg:text-2xl leading-relaxed text-[#ECEBE6]/90"
         >
           {/* Paragraf 1 */}
-          <p>
+          <p className="will-change-transform">
             XORA adalah digital studio yang menghadirkan solusi digital modern untuk membantu bisnis
             membangun identitas, sistem, dan pengalaman digital yang lebih kuat.
           </p>
 
           {/* Paragraf 2 */}
-          <p>
+          <p className="will-change-transform">
             XORA berfokus pada pengembangan website premium, digital templates, custom business
             systems, dan digital automation yang dirancang dengan perpaduan antara desain, teknologi,
             dan kebutuhan nyata sebuah bisnis.
           </p>
 
           {/* Paragraf 3 */}
-          <p>
+          <p className="will-change-transform">
             Kami tidak hanya membangun produk digital. Kami membangun digital experience yang
             membantu bisnis tampil lebih profesional, bekerja lebih efisien, dan berkembang lebih cepat.
           </p>
@@ -163,7 +173,7 @@ export default function Hero() {
       <div className="w-full max-w-[1650px] mx-auto pb-2 sm:pb-4">
         <div
           ref={footerLabelRef}
-          className="font-mono font-bold text-xs sm:text-sm uppercase tracking-widest text-[#ECEBE6]"
+          className="font-mono font-bold text-xs sm:text-sm uppercase tracking-widest text-[#ECEBE6] will-change-transform"
         >
           XORA 2026
         </div>

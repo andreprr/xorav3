@@ -22,53 +22,51 @@ export default function Story() {
   const rightHeaderRef = useRef<HTMLHeadingElement>(null);
   const storyBodyRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER STORYTELLING ANIMATION ──
+  // ── GSAP SCROLLTRIGGER FAST ON-POINT STAGGERED ENTRANCE ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
 
+      const steps = storyBodyRef.current
+        ? storyBodyRef.current.querySelectorAll(".story-step")
+        : [];
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 85%",
           toggleActions: "play none none reverse",
         },
+        defaults: { ease: "power3.out", duration: 0.7 },
       });
 
-      // 1. Judul Kiri "WHY WE BUILT XORA" Reveal
+      // 1. Judul Kiri "WHY WE BUILT XORA" — slide dari kiri
       if (leftTitleRef.current) {
         tl.fromTo(
           leftTitleRef.current,
-          { opacity: 0, x: -50, filter: "blur(12px)" },
-          { opacity: 1, x: 0, filter: "blur(0px)", duration: 1, ease: "power3.out" }
+          { opacity: 0, x: -70, filter: "blur(12px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)" },
+          0
         );
       }
 
-      // 2. Headline Kanan "BECAUSE GREAT BUSINESSES..."
+      // 2. Headline Kanan — fade up
       if (rightHeaderRef.current) {
         tl.fromTo(
           rightHeaderRef.current,
-          { opacity: 0, y: 30, filter: "blur(8px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
-          "-=0.6"
+          { opacity: 0, y: 40, filter: "blur(8px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)" },
+          0.1
         );
       }
 
-      // 3. Paragraf Narasi Storytelling Reveal Line by Line
-      if (storyBodyRef.current) {
-        const textElements = storyBodyRef.current.querySelectorAll(".story-step");
+      // 3. Story steps — staggered entrance cepat
+      if (steps.length) {
         tl.fromTo(
-          textElements,
-          { opacity: 0, y: 25, filter: "blur(6px)" },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.7,
-            stagger: 0.15,
-            ease: "power3.out",
-          },
-          "-=0.4"
+          steps,
+          { opacity: 0, y: 36, filter: "blur(8px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", stagger: 0.12 },
+          0.2
         );
       }
     },
@@ -105,7 +103,7 @@ export default function Story() {
           {/* ========================================================= */}
           <div
             ref={leftTitleRef}
-            className="lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r-2 border-white/20 pr-0 lg:pr-12 pb-8 lg:pb-0"
+            className="lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r-2 border-white/20 pr-0 lg:pr-12 pb-8 lg:pb-0 will-change-transform"
           >
             <h1
               className={`
@@ -138,7 +136,7 @@ export default function Story() {
             <div className="w-full pb-6 border-b border-white/20">
               <h2
                 ref={rightHeaderRef}
-                className="font-sans font-black text-2xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-right leading-tight text-[#ECEBE6]"
+                className="font-sans font-black text-2xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-right leading-tight text-[#ECEBE6] will-change-transform"
               >
                 BECAUSE GREAT BUSINESSES<br />
                 DESERVE GREAT DIGITAL<br />
@@ -151,14 +149,14 @@ export default function Story() {
               ref={storyBodyRef}
               className="space-y-6 sm:space-y-8 font-sans text-xs sm:text-sm lg:text-base leading-relaxed text-[#ECEBE6]/90 border-b border-white/20 pb-8"
             >
-              <p className="story-step uppercase font-medium tracking-wider">
+              <p className="story-step uppercase font-medium tracking-wider will-change-transform">
                 KAMI PERCAYA BAHWA TEKNOLOGI SEHARUSNYA BUKAN SEKADAR PELENGKAP SEBUAH BISNIS.<br />
                 TEKNOLOGI HARUS MEMBANTU BISNIS LEBIH PROFESIONAL, BEKERJA LEBIH EFEKTIF, DAN MEMILIKI RUANG UNTUK BERKEMBANG.<br />
                 KARENA ITU, XORA MENGGABUNGKAN:
               </p>
 
               {/* STRATEGY */}
-              <div className="story-step space-y-1">
+              <div className="story-step space-y-1 will-change-transform">
                 <h3 className="font-bold text-sm sm:text-base lg:text-lg uppercase text-[#ECEBE6] tracking-wider">
                   STRATEGY :
                 </h3>
@@ -168,7 +166,7 @@ export default function Story() {
               </div>
 
               {/* DESIGN */}
-              <div className="story-step space-y-1">
+              <div className="story-step space-y-1 will-change-transform">
                 <h3 className="font-bold text-sm sm:text-base lg:text-lg uppercase text-[#ECEBE6] tracking-wider">
                   DESIGN :
                 </h3>
@@ -178,7 +176,7 @@ export default function Story() {
               </div>
 
               {/* TECHNOLOGY */}
-              <div className="story-step space-y-1">
+              <div className="story-step space-y-1 will-change-transform">
                 <h3 className="font-bold text-sm sm:text-base lg:text-lg uppercase text-[#ECEBE6] tracking-wider">
                   TECHNOLOGY :
                 </h3>
@@ -188,7 +186,7 @@ export default function Story() {
               </div>
 
               {/* AUTOMATION */}
-              <div className="story-step space-y-1">
+              <div className="story-step space-y-1 will-change-transform">
                 <h3 className="font-bold text-sm sm:text-base lg:text-lg uppercase text-[#ECEBE6] tracking-wider">
                   AUTOMATION :
                 </h3>

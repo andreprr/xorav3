@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { Check, Minus } from "lucide-react";
 import { Staatliches } from "next/font/google";
-import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -68,12 +67,12 @@ export default function Comparison() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER ANIMATION (ON-POINT ENTRANCE) ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
 
-      // 1. Animasi Title Entrance
+      // 1. Animasi Title Entrance (once)
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -82,7 +81,7 @@ export default function Comparison() {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            duration: 0.8,
+            duration: 0.7,
             ease: "power3.out",
             scrollTrigger: {
               trigger: titleRef.current,
@@ -93,23 +92,43 @@ export default function Comparison() {
         );
       }
 
-      // 2. Animasi Card Tabel Entrance
+      // 2. Animasi Card Tabel Entrance + subtle scaleX grow (kiri ke kanan, once)
       if (tableRef.current) {
         gsap.fromTo(
           tableRef.current,
-          { opacity: 0, y: 45, scale: 0.98 },
+          { opacity: 0, y: 45, scaleX: 0, transformOrigin: "left center" },
           {
             opacity: 1,
             y: 0,
-            scale: 1,
-            duration: 0.85,
+            scaleX: 1,
+            duration: 0.8,
             ease: "power3.out",
             scrollTrigger: {
               trigger: tableRef.current,
-              start: "top 80%",
+              start: "top 85%",
               toggleActions: "play none none reverse",
             },
           }
+        );
+      }
+
+      // 3. Animasi Baris Tabel: checkmark reveal staggered (once)
+      const rows = gsap.utils.toArray<HTMLElement>(".comparison-row");
+
+      if (rows.length && tableRef.current) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: tableRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        tl.fromTo(
+          rows,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.08 },
+          "+=0.1"
         );
       }
     },
@@ -165,8 +184,12 @@ export default function Comparison() {
               bg-[#F1F5F9]/80
               p-5 sm:p-8 lg:p-10
               shadow-[0_15px_40px_rgba(0,0,0,0.02)]
+              hover:shadow-[0_25px_60px_rgba(229,35,35,0.08)]
+              transition-shadow
+              duration-500
               border
               border-slate-200/60
+              will-change-transform
             "
           >
             <div className="overflow-x-auto">
@@ -189,14 +212,11 @@ export default function Comparison() {
                 </thead>
 
                 <tbody>
-                  {features.map((item, index) => (
-                    <motion.tr
+                  {features.map((item) => (
+                    <tr
                       key={item.feature}
-                      initial={{ opacity: 0, y: 8 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25, delay: index * 0.04 }}
-                      viewport={{ once: true }}
                       className="
+                        comparison-row
                         border-b
                         border-slate-300/70
                         last:border-b-0
@@ -221,7 +241,7 @@ export default function Comparison() {
                           </td>
                         )
                       )}
-                    </motion.tr>
+                    </tr>
                   ))}
                 </tbody>
               </table>

@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { Staatliches } from "next/font/google";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 // Import Font Staatliches untuk Header Pricing
@@ -12,47 +13,66 @@ const staatliches = Staatliches({
   subsets: ["latin"],
 });
 
+// Premium Easing
+const cubicEase = [0.16, 1, 0.3, 1] as const;
+
+// Container untuk stagger baris judul
+const titleContainerVariant: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.16, delayChildren: 0.15 },
+  },
+};
+
+// Baris judul: masuk dengan scale/fade + elastic spring
+const titleLineVariant: Variants = {
+  hidden: { opacity: 0, scale: 0.5, y: 50 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: "spring", bounce: 0.45, duration: 1 },
+  },
+};
+
+// Paragraf deskripsi: fade + slide up dengan premium easing
+const descVariant: Variants = {
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: cubicEase, delay: 0.6 },
+  },
+};
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
 
-  // ── ANIMASI ENTRANCE (GSAP) ──
+  // ── ANIMASI BANNER MERAH BAWAH: SLIDE-UP SEKALI SAAT MASUK VIEWPORT ──
   useGSAP(
     () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || !bannerRef.current) return;
 
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-      // Animasi Judul Utama
-      if (titleRef.current) {
-        tl.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 50, filter: "blur(10px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1 }
-        );
-      }
-
-      // Animasi Paragraf Deskripsi
-      if (descRef.current) {
-        tl.fromTo(
-          descRef.current,
-          { opacity: 0, y: 20, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7 },
-          "-=0.5"
-        );
-      }
-
-      // Animasi Banner Merah Bawah
-      if (bannerRef.current) {
-        tl.fromTo(
-          bannerRef.current,
-          { opacity: 0, y: 60 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          "-=0.4"
-        );
-      }
+      gsap.fromTo(
+        bannerRef.current,
+        { yPercent: 100 },
+        {
+          yPercent: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     },
     { scope: containerRef }
   );
@@ -79,8 +99,10 @@ export default function Hero() {
       <div className="w-full max-w-[1650px] mx-auto px-6 sm:px-12 lg:px-16 flex-grow flex flex-col justify-center">
         
         {/* GIANT TYPOGRAPHY TITLE */}
-        <h1
-          ref={titleRef}
+        <motion.h1
+          variants={titleContainerVariant}
+          initial="hidden"
+          animate="visible"
           className={`
             ${staatliches.className}
             uppercase
@@ -91,13 +113,25 @@ export default function Hero() {
             max-w-7xl
           `}
         >
-          <span className="block">XORA</span>
-          <span className="block whitespace-nowrap">PACKAGE PRICING</span>
-        </h1>
+          <motion.span
+            variants={titleLineVariant}
+            className="block will-change-transform"
+          >
+            XORA
+          </motion.span>
+          <motion.span
+            variants={titleLineVariant}
+            className="block whitespace-nowrap will-change-transform"
+          >
+            PACKAGE PRICING
+          </motion.span>
+        </motion.h1>
 
         {/* DESCRIPTION PARAGRAPH */}
         <motion.p
-          ref={descRef}
+          variants={descVariant}
+          initial="hidden"
+          animate="visible"
           className="
             mt-6 sm:mt-8 lg:mt-10
             font-sans
@@ -124,6 +158,7 @@ export default function Hero() {
           bg-[#E52323]
           rounded-tl-[2.5rem] sm:rounded-tl-[4rem] lg:rounded-tl-[5rem]
           mt-12 sm:mt-16
+          will-change-transform
         "
       />
     </section>

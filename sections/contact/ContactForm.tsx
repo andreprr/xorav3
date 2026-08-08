@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Anton } from "next/font/google";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -16,53 +17,33 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Custom Cubic Bezier Easing
+const customEase = [0.16, 1, 0.3, 1] as const;
+
 export default function ContactForm() {
   const sectionRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const textContentRef = useRef<HTMLDivElement>(null);
-  const formCardRef = useRef<HTMLFormElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER: Vertical Red Sidebar Slide-In Entrance ──
   useGSAP(
     () => {
-      if (!sectionRef.current) return;
+      if (!sidebarRef.current) return;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 78%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      // 1. Sidebar Red Banner Entrance
-      if (sidebarRef.current) {
-        tl.fromTo(
-          sidebarRef.current,
-          { opacity: 0, x: -50 },
-          { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" }
-        );
-      }
-
-      // 2. Text Content Reveal
-      if (textContentRef.current) {
-        tl.fromTo(
-          textContentRef.current,
-          { opacity: 0, y: 35, filter: "blur(8px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
-          "-=0.5"
-        );
-      }
-
-      // 3. Form Card Reveal
-      if (formCardRef.current) {
-        tl.fromTo(
-          formCardRef.current,
-          { opacity: 0, y: 45, scale: 0.97, filter: "blur(10px)" },
-          { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.9, ease: "power3.out" },
-          "-=0.6"
-        );
-      }
+      gsap.fromTo(
+        sidebarRef.current,
+        { yPercent: -100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sidebarRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     },
     { scope: sectionRef }
   );
@@ -95,6 +76,7 @@ export default function ContactForm() {
           items-center
           justify-center
           py-12
+          will-change-transform
         "
       >
         <h2
@@ -119,11 +101,14 @@ export default function ContactForm() {
         <div className="w-full max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* ========================================================= */}
-          {/* MIDDLE COLUMN: TITLE & DESCRIPTION                       */}
+          {/* MIDDLE COLUMN: TITLE & DESCRIPTION (Fade-Up Blur Reveal)  */}
           {/* ========================================================= */}
-          <div
-            ref={textContentRef}
-            className="lg:col-span-5 flex flex-col justify-start pt-4 lg:pt-12"
+          <motion.div
+            initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: customEase }}
+            className="lg:col-span-5 flex flex-col justify-start pt-4 lg:pt-12 will-change-transform"
           >
             <h1 className="font-sans font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight text-slate-950 leading-[1.05]">
               TELL US ABOUT<br />
@@ -134,14 +119,17 @@ export default function ContactForm() {
               Isi formulir berikut dan tim kami akan menghubungi Anda secepat mungkin
               untuk mendiskusikan solusi terbaik sesuai kebutuhan bisnis Anda.
             </p>
-          </div>
+          </motion.div>
 
           {/* ========================================================= */}
-          {/* RIGHT COLUMN: CLEAN FLOATING FORM CARD                    */}
+          {/* RIGHT COLUMN: CLEAN FLOATING FORM CARD (Rises y:60 -> 0)  */}
           {/* ========================================================= */}
-          <form
-            ref={formCardRef}
+          <motion.form
             onSubmit={(e) => e.preventDefault()}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: customEase }}
             className="
               lg:col-span-7
               w-full
@@ -152,6 +140,7 @@ export default function ContactForm() {
               border
               border-slate-100
               space-y-5
+              will-change-transform
             "
           >
             {/* Full Name */}
@@ -243,14 +232,17 @@ export default function ContactForm() {
 
             {/* Submit Button */}
             <div className="pt-4 text-center">
-              <button
+              <motion.button
                 type="submit"
-                className="font-sans font-bold text-sm sm:text-base text-slate-900 hover:text-[#E52323] transition-colors"
+                whileHover={{ y: -3, scale: 1.04 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 350, damping: 18 }}
+                className="font-sans font-bold text-sm sm:text-base text-slate-900 hover:text-[#E52323] transition-colors cursor-pointer will-change-transform"
               >
                 Send Project Inquiry
-              </button>
+              </motion.button>
             </div>
-          </form>
+          </motion.form>
 
         </div>
 

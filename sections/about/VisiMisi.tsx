@@ -47,9 +47,10 @@ export default function VisiMisi() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const visionRef = useRef<HTMLDivElement>(null);
-  const missionItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const missionRef = useRef<HTMLDivElement>(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER FAST ON-POINT STAGGERED ENTRANCE ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
@@ -57,41 +58,51 @@ export default function VisiMisi() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%",
+          start: "top 85%",
           toggleActions: "play none none reverse",
         },
+        defaults: { ease: "power3.out", duration: 0.7 },
       });
 
       // 1. Header Entrance (VISION - MISSION + Line)
       if (headerRef.current) {
         tl.fromTo(
           headerRef.current,
-          { opacity: 0, y: 50, filter: "blur(10px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out" }
+          { opacity: 0, y: 40, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)" },
+          0
         );
       }
 
-      // 2. Vision Content Entrance (Kolom Kiri)
+      // 2. Center divider line quick draw (scaleY 0 -> 1)
+      if (dividerRef.current) {
+        tl.fromTo(
+          dividerRef.current,
+          { scaleY: 0 },
+          { scaleY: 1, duration: 0.6, ease: "power3.inOut" },
+          0.1
+        );
+      }
+
+      // 3. Vision column split-reveal — slide in dari kiri
       if (visionRef.current) {
         tl.fromTo(
           visionRef.current,
-          { opacity: 0, y: 40, filter: "blur(8px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
-          "-=0.6"
+          { opacity: 0, x: -60, filter: "blur(6px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)" },
+          0.2
         );
       }
 
-      // 3. Mission Items Entrance Staggered (Kolom Kanan)
-      missionItemsRef.current.forEach((item, index) => {
-        if (!item) return;
-
+      // 4. Mission column split-reveal — slide in dari kanan
+      if (missionRef.current) {
         tl.fromTo(
-          item,
-          { opacity: 0, x: 30, filter: "blur(6px)" },
-          { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" },
-          `-=${index === 0 ? 0.5 : 0.4}`
+          missionRef.current,
+          { opacity: 0, x: 60, filter: "blur(6px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)" },
+          0.3
         );
-      });
+      }
     },
     { scope: sectionRef }
   );
@@ -155,12 +166,20 @@ export default function VisiMisi() {
         </div>
 
         {/* ── 2. MAIN CONTENT GRID (VISION KIRI vs MISSION KANAN) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start flex-grow my-auto pt-8 sm:pt-12">
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start flex-grow my-auto pt-8 sm:pt-12">
           
+          {/* CENTER VERTICAL DIVIDER LINE (QUICK DRAW) */}
+          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2 z-10 pointer-events-none">
+            <div
+              ref={dividerRef}
+              className="w-[2px] h-full bg-white/30 origin-top will-change-transform"
+            />
+          </div>
+
           {/* KOLOM KIRI: VISION STATEMENT */}
           <div
             ref={visionRef}
-            className="lg:col-span-6 flex flex-col justify-between min-h-[300px] lg:min-h-[420px] pr-0 lg:pr-8"
+            className="lg:col-span-6 flex flex-col justify-between min-h-[300px] lg:min-h-[420px] pr-0 lg:pr-8 will-change-transform"
           >
             <p className="font-sans font-medium text-xl sm:text-3xl lg:text-4xl leading-relaxed sm:leading-snug text-[#ECEBE6] max-w-2xl">
               Membangun masa depan digital bagi bisnis melalui pengalaman, teknologi,
@@ -174,14 +193,14 @@ export default function VisiMisi() {
             </div>
           </div>
 
-          {/* KOLOM KANAN: MISSION LIST DENGAN GARIS VERTIKAL & HORIZONTAL */}
-          <div className="lg:col-span-6 lg:border-l lg:border-white/20 lg:pl-12 space-y-6 sm:space-y-8">
-            {missionList.map((item, index) => (
+          {/* KOLOM KANAN: MISSION LIST */}
+          <div
+            ref={missionRef}
+            className="lg:col-span-6 lg:pl-12 space-y-6 sm:space-y-8 will-change-transform"
+          >
+            {missionList.map((item) => (
               <div
                 key={item.number}
-                ref={(el) => {
-                  missionItemsRef.current[index] = el;
-                }}
                 className="w-full pb-6 border-b border-white/20 last:border-b-0"
               >
                 {/* Headline: Number — Title */}

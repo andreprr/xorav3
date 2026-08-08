@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Antonio, Montserrat } from "next/font/google";
+import { motion, Variants } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -17,6 +18,9 @@ const montserrat = Montserrat({
   weight: ["400", "500"],
   subsets: ["latin"],
 });
+
+// Custom Easing Premium
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -45,12 +49,31 @@ const valuesList = [
   },
 ];
 
+// Variants Staggered Entrance untuk Value Items
+const listVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const rowVariants: Variants = {
+  hidden: { opacity: 0, y: 34, filter: "blur(8px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: EASE },
+  },
+};
+
 export default function Values() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
 
-  // ── GSAP SCROLLTRIGGER ANIMATION ──
+  // ── GSAP SCROLLTRIGGER (TITLE SLIDE-IN + DESC SOFT BLUR) ──
   useGSAP(
     () => {
       if (!sectionRef.current) return;
@@ -61,28 +84,37 @@ export default function Values() {
           start: "top 78%",
           toggleActions: "play none none reverse",
         },
+        defaults: { ease: "power4.out" },
       });
 
-      // 1. Header Entrance
-      if (headerRef.current) {
+      // 1. Title Antonio — slide in dari kiri
+      if (titleRef.current) {
         tl.fromTo(
-          headerRef.current,
-          { opacity: 0, y: 40, filter: "blur(10px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
+          titleRef.current,
+          { opacity: 0, x: -70, filter: "blur(10px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)", duration: 1 }
         );
       }
 
-      // 2. Value Items Staggered Entrance
-      rowsRef.current.forEach((row, index) => {
-        if (!row) return;
-
+      // 2. Micro Label "WHAT WE BELIEVE IN" — fade up
+      if (labelRef.current) {
         tl.fromTo(
-          row,
-          { opacity: 0, y: 30, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" },
-          `-=${index === 0 ? 0.4 : 0.45}`
+          labelRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          "-=0.7"
         );
-      });
+      }
+
+      // 3. Deskripsi Montserrat — fade dengan soft blur
+      if (descRef.current) {
+        tl.fromTo(
+          descRef.current,
+          { opacity: 0, filter: "blur(10px)" },
+          { opacity: 1, filter: "blur(0px)", duration: 1 },
+          "-=0.5"
+        );
+      }
     },
     { scope: sectionRef }
   );
@@ -110,11 +142,12 @@ export default function Values() {
       <div className="w-full max-w-[1650px] mx-auto my-auto flex flex-col justify-center">
         
         {/* ── 1. HEADER SECTION (XORA VALUES + WHAT WE BELIEVE IN + DIVIDER) ── */}
-        <div ref={headerRef} className="w-full pb-6 sm:pb-8 border-b border-white/20 mb-8 sm:mb-12">
+        <div className="w-full pb-6 sm:pb-8 border-b border-white/20 mb-8 sm:mb-12">
           
           <div className="flex flex-col sm:flex-row items-baseline justify-start gap-4 sm:gap-8">
             {/* GIANT TITLE "XORA VALUES" */}
             <h2
+              ref={titleRef}
               className={`
                 ${antonio.className}
                 uppercase
@@ -122,33 +155,43 @@ export default function Values() {
                 leading-none
                 text-[clamp(4.2rem,13vw,11.5rem)]
                 text-[#ECEBE6]
+                will-change-transform
               `}
             >
               XORA VALUES
             </h2>
 
             {/* MICRO LABEL "WHAT WE BELIEVE IN" */}
-            <span className="font-sans font-bold text-sm sm:text-base lg:text-xl uppercase tracking-widest text-slate-300">
+            <span
+              ref={labelRef}
+              className="font-sans font-bold text-sm sm:text-base lg:text-xl uppercase tracking-widest text-slate-300 will-change-transform"
+            >
               WHAT WE BELIEVE IN
             </span>
           </div>
 
           {/* SUB-HEADLINE PARAGRAPH */}
-          <p className={`${montserrat.className} mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg text-slate-300 font-normal`}>
+          <p ref={descRef} className={`${montserrat.className} mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg text-slate-300 font-normal will-change-transform`}>
             The way we build defines what we build.
           </p>
 
         </div>
 
         {/* ── 2. VALUES LIST (GRID 2 KOLOM PER BARIS) ── */}
-        <div className="space-y-8 sm:space-y-10 lg:space-y-12">
-          {valuesList.map((item, index) => (
-            <div
+        <motion.div
+          variants={listVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          className="space-y-8 sm:space-y-10 lg:space-y-12"
+        >
+          {valuesList.map((item) => (
+            <motion.div
               key={item.title}
-              ref={(el) => {
-                rowsRef.current[index] = el;
-              }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-start"
+              variants={rowVariants}
+              whileHover={{ x: 10, transition: { duration: 0.4, ease: EASE } }}
+              whileTap={{ scale: 0.95 }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-start will-change-transform"
             >
               {/* KOLOM KIRI: VALUE TITLE (ANTONIO FONT) */}
               <div className="lg:col-span-4">
@@ -181,9 +224,9 @@ export default function Values() {
                   {item.desc}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

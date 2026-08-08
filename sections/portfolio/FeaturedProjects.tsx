@@ -58,6 +58,8 @@ export default function FeaturedProjects() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const projectCardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const statRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // ── GSAP SCROLLTRIGGER ANIMATION ──
   useGSAP(
@@ -95,7 +97,7 @@ export default function FeaturedProjects() {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            duration: 0.9,
+            duration: 0.8,
             ease: "power3.out",
             scrollTrigger: {
               trigger: card,
@@ -105,6 +107,51 @@ export default function FeaturedProjects() {
           }
         );
       });
+
+      // 3. Image Zoom Entrance (on-point, saat masuk viewport)
+      imageRefs.current.forEach((img) => {
+        if (!img) return;
+
+        gsap.fromTo(
+          img,
+          { scale: 0.92 },
+          {
+            scale: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            willChange: "transform",
+            scrollTrigger: {
+              trigger: img,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+
+      // 4. Stats Staggered Entrance (on-point saat masuk viewport)
+      const stats = statRefs.current.filter(
+        (stat): stat is HTMLDivElement => stat !== null
+      );
+      if (stats.length > 0) {
+        gsap.fromTo(
+          stats,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power3.out",
+            willChange: "transform",
+            scrollTrigger: {
+              trigger: stats[0],
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
     },
     { scope: sectionRef }
   );
@@ -175,11 +222,22 @@ export default function FeaturedProjects() {
               }}
               className="w-full border-b border-slate-200/80 pb-12 sm:pb-16 last:border-b-0"
             >
+              <motion.div
+                whileHover={{ y: -4 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 320, damping: 26 }}
+                className="w-full will-change-transform"
+              >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
                 
                 {/* KOLOM KIRI: PREVIEW MOCKUP GAMBAR + LABEL CATEGORY */}
                 <div className="lg:col-span-7 flex flex-col items-start">
-                  <div className="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-slate-950 border border-slate-200 shadow-md group">
+                  <div
+                    ref={(el) => {
+                      imageRefs.current[index] = el;
+                    }}
+                    className="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-slate-950 border border-slate-200 shadow-md group will-change-transform"
+                  >
                     <Image
                       src={project.image}
                       alt={project.title}
@@ -214,8 +272,13 @@ export default function FeaturedProjects() {
                       
                       {/* STATS LIST (KIRI) */}
                       <div className="space-y-5">
-                        {project.stats.map((stat) => (
-                          <div key={stat.label}>
+                        {project.stats.map((stat, statIdx) => (
+                          <div
+                            key={stat.label}
+                            ref={(el) => {
+                              statRefs.current[index * project.stats.length + statIdx] = el;
+                            }}
+                          >
                             <h4 className="font-sans font-black text-2xl sm:text-3xl text-slate-950 leading-none">
                               {stat.value}
                             </h4>
@@ -281,6 +344,7 @@ export default function FeaturedProjects() {
                 </div>
 
               </div>
+              </motion.div>
             </div>
           ))}
         </div>
