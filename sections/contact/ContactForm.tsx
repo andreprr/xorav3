@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Anton } from "next/font/google";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
@@ -24,7 +24,55 @@ export default function ContactForm() {
   const sectionRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // ── GSAP SCROLLTRIGGER: Vertical Red Sidebar Slide-In Entrance ──
+  // ── 1. STATE UNTUK MENAMPUNG INPUT FORM ──
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    whatsapp: "",
+    company: "",
+    projectType: "Landing Page",
+    budget: "Rp 500rb - 2jt",
+    details: "",
+  });
+
+  // Handler Perubahan Input Form
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // ── 2. FUNGSI SUBMIT KE WHATSAPP ──
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // MASUKKAN NOMOR WA TUJUAN (Gunakan Kode Negara tanpa tanda + atau 0 di depan, misal: 6282130300614)
+    const targetPhoneNumber = "6282130300614"; 
+
+    // Format Pesan Teks
+    const message = `Halo XORA Studio, saya ingin mengajukan proyek baru.%0A%0A` +
+      `*── DETAIL CLIENT ──*%0A` +
+      `• *Nama Lengkap:* ${formData.fullName || "-"}%0A` +
+      `• *Email:* ${formData.email || "-"}%0A` +
+      `• *No. WhatsApp:* ${formData.whatsapp || "-"}%0A` +
+      `• *Perusahaan:* ${formData.company || "-"}%0A%0A` +
+      `*── DETAIL PROYEK ──*%0A` +
+      `• *Tipe Proyek:* ${formData.projectType}%0A` +
+      `• *Estimasi Budget:* ${formData.budget}%0A` +
+      `• *Catatan / Detail:* ${formData.details || "-"}`;
+
+    // Buat WhatsApp Direct Link URL
+    const waUrl = `https://wa.me/${targetPhoneNumber}?text=${message}`;
+
+    // Buka WhatsApp di tab baru
+    window.open(waUrl, "_blank");
+  };
+
+  // ── GSAP SCROLLTRIGGER ──
   useGSAP(
     () => {
       if (!sidebarRef.current) return;
@@ -64,7 +112,7 @@ export default function ContactForm() {
         flex
       "
     >
-      {/* ── 1. LEFT VERTICAL RED SIDEBAR WITH VERTICAL TEXT ── */}
+      {/* ── 1. LEFT VERTICAL RED SIDEBAR ── */}
       <div
         ref={sidebarRef}
         className="
@@ -95,14 +143,11 @@ export default function ContactForm() {
         </h2>
       </div>
 
-      {/* ── 2. MAIN CONTENT AREA (MIDDLE TEXT & RIGHT FORM) ── */}
+      {/* ── 2. MAIN CONTENT AREA ── */}
       <div className="flex-grow flex items-center py-12 sm:py-16 px-6 sm:px-12 lg:px-16 overflow-x-auto">
-        
         <div className="w-full max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
-          {/* ========================================================= */}
-          {/* MIDDLE COLUMN: TITLE & DESCRIPTION (Fade-Up Blur Reveal)  */}
-          {/* ========================================================= */}
+          {/* MIDDLE COLUMN: TITLE & DESCRIPTION */}
           <motion.div
             initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -121,11 +166,9 @@ export default function ContactForm() {
             </p>
           </motion.div>
 
-          {/* ========================================================= */}
-          {/* RIGHT COLUMN: CLEAN FLOATING FORM CARD (Rises y:60 -> 0)  */}
-          {/* ========================================================= */}
+          {/* RIGHT COLUMN: FORM CARD */}
           <motion.form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
@@ -150,6 +193,10 @@ export default function ContactForm() {
               </label>
               <input
                 type="text"
+                name="fullName"
+                required
+                value={formData.fullName}
+                onChange={handleChange}
                 placeholder="John Doe"
                 className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
               />
@@ -162,6 +209,10 @@ export default function ContactForm() {
               </label>
               <input
                 type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="john@email.com"
                 className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
               />
@@ -174,6 +225,10 @@ export default function ContactForm() {
               </label>
               <input
                 type="tel"
+                name="whatsapp"
+                required
+                value={formData.whatsapp}
+                onChange={handleChange}
                 placeholder="+62..."
                 className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
               />
@@ -186,6 +241,9 @@ export default function ContactForm() {
               </label>
               <input
                 type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
                 placeholder="Your Company"
                 className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
               />
@@ -196,12 +254,17 @@ export default function ContactForm() {
               <label className="mb-2 block font-sans font-bold text-xs sm:text-sm text-slate-900">
                 Project Type
               </label>
-              <select className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white">
-                <option>Landing Page</option>
-                <option>Company Profile</option>
-                <option>E-Commerce</option>
-                <option>Dashboard</option>
-                <option>Custom Web App</option>
+              <select
+                name="projectType"
+                value={formData.projectType}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
+              >
+                <option value="Landing Page">Landing Page</option>
+                <option value="Company Profile">Company Profile</option>
+                <option value="E-Commerce">E-Commerce</option>
+                <option value="Dashboard">Dashboard</option>
+                <option value="Custom Web App">Custom Web App</option>
               </select>
             </div>
 
@@ -210,11 +273,16 @@ export default function ContactForm() {
               <label className="mb-2 block font-sans font-bold text-xs sm:text-sm text-slate-900">
                 Estimated Budget
               </label>
-              <select className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white">
-                <option>Rp 500rb - 2jt</option>
-                <option>Rp 2jt - 5jt</option>
-                <option>Rp 5jt - 10jt</option>
-                <option>Rp 10jt+</option>
+              <select
+                name="budget"
+                value={formData.budget}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white"
+              >
+                <option value="Rp 500rb - 2jt">Rp 500rb - 2jt</option>
+                <option value="Rp 2jt - 5jt">Rp 2jt - 5jt</option>
+                <option value="Rp 5jt - 10jt">Rp 5jt - 10jt</option>
+                <option value="Rp 10jt+">Rp 10jt+</option>
               </select>
             </div>
 
@@ -224,7 +292,10 @@ export default function ContactForm() {
                 Project Details
               </label>
               <textarea
+                name="details"
                 rows={5}
+                value={formData.details}
+                onChange={handleChange}
                 placeholder="Tell us about your project..."
                 className="w-full rounded-xl border border-slate-200/80 bg-[#FAFAFA] px-4 py-3 font-sans text-sm outline-none transition focus:border-slate-400 focus:bg-white resize-none"
               />
@@ -239,13 +310,12 @@ export default function ContactForm() {
                 transition={{ type: "spring", stiffness: 350, damping: 18 }}
                 className="font-sans font-bold text-sm sm:text-base text-slate-900 hover:text-[#E52323] transition-colors cursor-pointer will-change-transform"
               >
-                Send Project Inquiry
+                Send Project Inquiry via WhatsApp →
               </motion.button>
             </div>
           </motion.form>
 
         </div>
-
       </div>
     </section>
   );
