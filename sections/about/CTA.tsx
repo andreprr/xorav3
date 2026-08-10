@@ -103,12 +103,13 @@ export default function CTA() {
               uppercase
               tracking-tight
               leading-[0.85]
-              text-[clamp(4.2rem,13vw,12.5rem)]
+              text-[clamp(2.4rem,11.5vw,12.5rem)]
               text-[#ECEBE6]
+              break-words
             `}
           >
             <span className="block">LET'S BUILD</span>
-            <span className="block whitespace-nowrap">SOMETHING AMAZING</span>
+            <span className="block sm:whitespace-nowrap">SOMETHING AMAZING</span>
           </h2>
 
           {/* PARAGRAPH DESKRIPSI */}
