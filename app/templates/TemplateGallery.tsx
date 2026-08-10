@@ -47,6 +47,15 @@ import brewlyImg from "@/app/templates/assets/BrewlyCoffee.webp";
 import contractorImg from "@/app/templates/assets/Contractor.webp";
 import startupImg from "@/app/templates/assets/Startup.webp";
 
+// --- IMPORT GAMBAR V0.APP SESUAI NAMA FILE ANDA ---
+import modernUxImg from "@/app/templates/assets/modernUX.webp";
+import computeAiImg from "@/app/templates/assets/computeAI.webp";
+import saasLandingImg from "@/app/templates/assets/SaasLanding.webp";
+import agenticImg from "@/app/templates/assets/Agentic.webp";
+import taskoImg from "@/app/templates/assets/tasko.webp";
+import salesOpImg from "@/app/templates/assets/salesops.webp";
+import optimusImg from "@/app/templates/assets/optimus.webp";
+
 // Import Font Staatliches untuk Header "GALLERY"
 const staatliches = Staatliches({
   weight: "400",
@@ -55,47 +64,112 @@ const staatliches = Staatliches({
 
 // 2. Data Templates
 const templates = [
+  // --- TEMPLATE INTERNAL (LOKAL) ---
   {
     title: "Brewly Coffee",
     category: "COFFEE SHOP",
     slug: "brewly",
     image: brewlyImg,
+    isExternal: false,
   },
   {
     title: "Contractor",
     category: "COMPANY PROFILE",
     slug: "contractor",
     image: contractorImg,
+    isExternal: false,
   },
   {
     title: "Startup Launch",
     category: "LANDING PAGE",
     slug: "startup-launch",
     image: startupImg,
+    isExternal: false,
   },
-  {
-    title: "Creative Portfolio",
-    category: "PORTFOLIO",
-    slug: "creative-portfolio",
-    image: null,
-  },
-  {
-    title: "Restaurant Premium",
-    category: "BUSINESS",
-    slug: "restaurant-premium",
-    image: null,
-  },
-  {
-    title: "Property Developer",
-    category: "BUSINESS",
-    slug: "property-developer",
-    image: null,
-  },
+  // {
+  //   title: "Creative Portfolio",
+  //   category: "PORTFOLIO",
+  //   slug: "creative-portfolio",
+  //   image: null,
+  //   isExternal: false,
+  // },
+  // {
+  //   title: "Restaurant Premium",
+  //   category: "BUSINESS",
+  //   slug: "restaurant-premium",
+  //   image: null,
+  //   isExternal: false,
+  // },
+  // {
+  //   title: "Property Developer",
+  //   category: "BUSINESS",
+  //   slug: "property-developer",
+  //   image: null,
+  //   isExternal: false,
+  // },
   {
     title: "Digital Agency",
     category: "COMPANY PROFILE",
     slug: "digital-agency",
     image: contractorImg,
+    isExternal: false,
+  },
+  // --- TEMPLATE EKSTERNAL (v0.app / Vercel) ---
+  {
+    title: "Modern UX Analytics",
+    category: "DASHBOARD",
+    slug: "ux-analytics-dashboard",
+    image: modernUxImg, // <-- Menggunakan modernUX.webp
+    isExternal: true,
+    demoUrl: "https://v0-dashboard-ui-alpha.vercel.app",
+  },
+  {
+    title: "COMPUTE AI Platform",
+    category: "LANDING PAGE",
+    slug: "compute-ai-platform",
+    image: computeAiImg, // <-- Menggunakan computeAI.webp
+    isExternal: true,
+    demoUrl: "https://v0-compute-11.vercel.app",
+  },
+  {
+    title: "Optimus AI Platform",
+    category: "LANDING PAGE",
+    slug: "optimus-ai",
+    image: optimusImg, // <-- (Anda belum menyebutkan nama file untuk Optimus, sementara saya biarkan null. Jika ada, import dan taruh di sini)
+    isExternal: true,
+    demoUrl: "https://v0-optimus-delta.vercel.app",
+  },
+  {
+    title: "SaaS Landing Page",
+    category: "LANDING PAGE",
+    slug: "saas-landing-page",
+    image: saasLandingImg, // <-- Menggunakan SaasLanding.webp
+    isExternal: true,
+    demoUrl: "https://veek-saas-landing-page.vercel.app",
+  },
+  {
+    title: "AGENTIC AI Agents",
+    category: "LANDING PAGE",
+    slug: "agentic-ai",
+    image: agenticImg, // <-- Menggunakan Agentic.webp
+    isExternal: true,
+    demoUrl: "https://v0-modern-agentic.vercel.app",
+  },
+  {
+    title: "Tasko Management",
+    category: "DASHBOARD",
+    slug: "tasko-dashboard",
+    image: taskoImg, // <-- Menggunakan tasko.webp
+    isExternal: true,
+    demoUrl: "https://v0-dashboard-ui-redesign-nine.vercel.app",
+  },
+  {
+    title: "SalesOps Dashboard",
+    category: "DASHBOARD",
+    slug: "salesops-dashboard",
+    image: salesOpImg, // <-- Menggunakan salesop.webp
+    isExternal: true,
+    demoUrl: "https://v0-sales-operations-dashboard.vercel.app",
   },
 ];
 
@@ -197,7 +271,11 @@ export default function TemplateGallery() {
 
                 {/* OVERLAY HOVER BUTTON (PREVIEW BADGE) */}
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 backdrop-blur-[2px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <Link href={`/templates/${template.slug}`}>
+                  <Link 
+                    href={template.isExternal && template.demoUrl ? template.demoUrl : `/templates/${template.slug}`}
+                    target={template.isExternal ? "_blank" : undefined}
+                    rel={template.isExternal ? "noopener noreferrer" : undefined}
+                  >
                     <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 text-slate-950 font-bold text-xs shadow-xl transition-transform duration-300 group-hover:scale-105">
                       <Eye size={15} /> Preview
                     </div>
